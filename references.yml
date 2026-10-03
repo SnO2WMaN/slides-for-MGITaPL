@@ -1,0 +1,342 @@
+FFL:
+  type: web
+  title: Formalized Formal Logic
+  author:
+    - Saito, Shogo
+    - Noguchi, Mashu
+  date: 2025
+  url: https://github.com/FormalizedFormalLogic/Foundation
+
+Cor87:
+  type: article
+  title: Weak Logics with Strict Implication
+  author: Corsi, Giovanna
+  date: 1987-01
+  page-range: 389-406
+  url:
+    value: https://onlinelibrary.wiley.com/doi/10.1002/malq.19870330503
+    date: 2025-04-21
+  serial-number:
+    doi: 10.1002/malq.19870330503
+    issn: 0942-5616, 1521-3870
+  parent:
+    type: periodical
+    title: Mathematical Logic Quarterly
+    issue: 5
+    volume: 33
+
+Göd33:
+  type: article
+  title: Eine {Interpretation} Des Intuitionischen {Aussagenkalküls}
+  author: Gödel, Kurt
+  date: 1933
+  page-range: "39"
+  parent:
+    type: periodical
+    title: Ergebnisse Eines Mathematischen Kolloquiumus
+    volume: 4
+
+MT48:
+  type: article
+  title: Some Theorems about the Sentential Calculi of {Lewis} and {Heyting}
+  author:
+    - McKinsey, J. C. C.
+    - Tarski, Alfred
+  date: 1948-03
+  page-range: 1-15
+  url:
+    value: https://www.cambridge.org/core/journals/journal-of-symbolic-logic/article/abs/some-theorems-about-the-sentential-calculi-of-lewis-and-heyting/A1AA3FA63649C074202F605A4D2094A4
+    date: 2024-09-19
+  serial-number:
+    doi: 10.2307/2268135
+    issn: 0022-4812, 1943-5886
+  abstract: In this paper we shall prove theorems about some systems of sentential calculus, by making use of results we have established elsewhere regarding closure algebras and Brouwerian albegras. We shall be concerned mostly with the Lewis system and the Heyting system. Some of the results here are new (in particular, Theorems 2.4, 3.1, 3.9, 3.10, 4.5, and 4.6); others have been stated without proof in the literature (in particular, Theorems 2.1, 2.2, 4.4, 5.2, and 5.3).The proofs to be given here will be found to be mostly very simple; generally speaking, they amount to drawing conclusions from the theorems established in McKinsey and Tarski [10] and [11]. We have thought it might be worth while, however, to publish these rather elementary consequences of our previous work—so as to make them readily available to those whose main interest lies in sentential calculus rather than in topology or algebra.
+  parent:
+    type: periodical
+    title: The Journal of Symbolic Logic
+    issue: 1
+    volume: 13
+
+SMdJ16:
+  type: article
+  title: Weak Subintuitionistic Logics
+  author:
+    - name: Shirmohammadzadeh Maleki
+      given-name: Fatemeh
+    - name: de Jongh
+      given-name: Dick
+  date: 2016-12-26
+  page-range: jzw62
+  url:
+    value: https://academic.oup.com/jigpal/article-lookup/doi/10.1093/jigpal/jzw062
+    date: 2025-11-12
+  serial-number:
+    doi: 10.1093/jigpal/jzw062
+    issn: 1367-0751, 1368-9894
+  abstract: A system WF of subintuitionistic logic is introduced, weaker than Corsi’s basic subintuitionistic system F. A derivation system with and without hypotheses is given in line with the authors’ derivation system for F. A neighbourhood semantics is introduced with a somewhat more complex definition than the neighbourhood semantics for non-normal modal logics. Completeness is proved for WF with respect to this neighbourhood semantics, and similarly for some logics between WF and F which characterize nice frame classes. The study by the authors of the conservativity of IPC over F with respect to some classes of implications is extended to WF, and shows clearly the difference in strength between the two logics. Study of translations of these weak subintuitionistic logics into non-normal modal logics turned out to be hard because of the difference between their respective neighbourhood structures and leaves us with some open problems.
+  parent:
+    type: periodical
+    title: Logic Journal of IGPL
+
+dJSM17:
+  type: article
+  title: Subintuitionistic {Logics} with {Kripke Semantics}
+  author:
+    - name: de Jongh
+      given-name: Dick
+    - name: Shirmohammadzadeh Maleki
+      given-name: Fatemeh
+  date: 2017
+  editor:
+    - Hansen, Helle Hvid
+    - Murray, Sarah E.
+    - Sadrzadeh, Mehrnoosh
+    - Zeevat, Henk
+  page-range: 333-354
+  url:
+    value: http://link.springer.com/10.1007/978-3-662-54332-0_18
+    date: 2025-10-13
+  serial-number:
+    doi: 10.1007/978-3-662-54332-0_18
+    isbn: 978-3-662-54331-3 978-3-662-54332-0
+  abstract: The subintuitionistic logics introduced by Corsi and Restall are developed in a uniform manner. Proof systems are given for derivations without and with assumptions. The results are applied to give conservation theorems for intuitionistic logic IPC over Corsi’s system F. For Visser’s basic logic strong completeness is proved and additional conservation results are obtained.
+  parent:
+    type: anthology
+    title: Logic, {Language}, and {Computation}
+    publisher:
+      name: Springer Berlin Heidelberg
+      location: Berlin, Heidelberg
+    volume: 10148
+
+dJSM18:
+  type: article
+  title: Subintuitionistic Logics and the Implications They Prove
+  author:
+    - name: de Jongh
+      given-name: Dick
+    - name: Shirmohammadzadeh Maleki
+      given-name: Fatemeh
+  date: 2018-12
+  page-range: 1525-1545
+  url:
+    value: https://linkinghub.elsevier.com/retrieve/pii/S0019357718303240
+    date: 2025-11-18
+  serial-number:
+    doi: 10.1016/j.indag.2018.01.013
+    issn: "00193577"
+  abstract: This is an investigation of the implications of IPC which remain provable when one weakens intuitionistic logic in various ways. The research is concerned with logics with Kripke models as introduced by G. Corsi in 1987, and others like G. Restall, Došen, Visser. This leads to conservativity results for IPC with regard to classes of implications in some of these logics. Moreover, similar results are reached for some weaker subintuitionistic systems with neighborhood models introduced by the authors in 2016. In addition, the relationship between two types of neighborhood models introduced in that work is clarified. This clarification leads also to modal companions for weaker logics.
+  parent:
+    type: periodical
+    title: Indagationes Mathematicae
+    issue: 6
+    volume: 29
+
+FMT92:
+  type: article
+  title: The {Pure Logic} of {Necessitation}
+  author:
+    - Fitting, Melvin C.
+    - Marek, V. Wiktor
+    - Truszczyński, Miroslaw
+  date: 1992
+  page-range: 349-373
+  url:
+    value: https://academic.oup.com/logcom/article-lookup/doi/10.1093/logcom/2.3.349
+    date: 2025-10-08
+  serial-number:
+    doi: 10.1093/logcom/2.3.349
+    issn: 0955-792X, 1465-363X
+  parent:
+    type: periodical
+    title: Journal of Logic and Computation
+    issue: 3
+    volume: 2
+
+KK25:
+  type: web
+  title: Modal Logical Aspects of Provability Predicates and Consistency Statements
+  author:
+    - Kogure, Haruka
+    - Kurahashi, Taishi
+  date: 2025-11-19
+  url:
+    value: http://arxiv.org/abs/2511.15531
+    date: 2025-12-07
+  serial-number:
+    arxiv: "2511.15531"
+    doi: 10.48550/arXiv.2511.15531
+  abstract: This paper studies the modal logical aspects of provability predicates and consistency statements for theories of arithmetic. First, we provide an overview of previous works on the correspondence between various derivability conditions for provability predicates and different modal logics. The main technical contribution of the present paper is to establish the arithmetical completeness of the logics NP, ND, NP4, and ND4 by extending Solovay’s method and refining Arai’s construction of Rosser provability predicates.
+
+Kur24:
+  type: article
+  title: The Provability Logic of All Provability Predicates
+  author: Kurahashi, Taishi
+  date: 2024-09
+  page-range: 1108-1135
+  serial-number:
+    doi: 10.1093/logcom/exad060
+    issn: 0955-792X, 1465-363X
+  abstract: Abstract We prove that the provability logic of all provability predicates is exactly Fitting, Marek, and Truszczyński’s pure logic of necessitation \$\\textsf\{N\}\$. Moreover, we introduce three extensions \$\\textsf\{N4\}\$, \$\\textsf\{NR\}\$ and \$\\textsf\{NR4\}\$ of \$\\textsf\{N\}\$ and investigate the arithmetical semantics of these logics. In fact, we prove that \$\\textsf\{N4\}\$, \$\\textsf\{NR\}\$ and \$\\textsf\{NR4\}\$ are the provability logics of all provability predicates satisfying the third condition \$\\textbf\{D3\}\$ of the derivability conditions, all Rosser provability predicates and all Rosser provability predicates satisfying \$\\textbf\{D3\}\$, respectively.
+  parent:
+    type: periodical
+    title: Journal of Logic and Computation
+    issue: 6
+    volume: 34
+
+Tom25:
+  type: article
+  title: "様相論理Nの計算複雑性"
+  author:
+    - name: 冨永
+      given-name: 浩平
+  date: 2025-12-19
+  parent:
+    - type: proceedings
+    - type: conference
+      title: "MLG 60"
+
+Vis81:
+  type: article
+  title: A Propositional Logic with Explicit Fixed Points
+  author: Visser, Albert
+  date: 1981-06
+  page-range: 155-175
+  url:
+    value: http://link.springer.com/10.1007/BF01874706
+    date: 2024-10-02
+  serial-number:
+    doi: 10.1007/BF01874706
+    issn: 0039-3215, 1572-8730
+  abstract: This paper studies a propositional logic which is obtained by inter preting implication as formal provability. It is also the logic of finite irreflexive Kripke Models. A Kripke Model completeness theorem is given and several completeness theorem? for interpretations into Provability Logic and Peano Arithmetic.
+  parent:
+    type: periodical
+    title: Studia Logica
+    issue: 2
+    volume: 40
+
+CZ97:
+  type: book
+  title: Modal Logic
+  author:
+    - Chagrov, Alexander
+    - Zakharyaschev, Michael
+  date: 1997
+  publisher:
+    name: Clarendon Press ; Oxford University Press
+    location: "Oxford : New York"
+  issue: 35
+  page-total: 605
+  serial-number:
+    isbn: 978-0-19-853779-3
+  parent:
+    type: book
+    title: Oxford Logic Guides
+
+Rui91:
+  type: article
+  title: Constructive Logic and the Paradoxes
+  author: Ruitenburg, Wim
+  date: 1991-01-01
+  page-range: 271-301
+  parent:
+    type: periodical
+    title: Modern Logic
+    issue: 4
+    volume: 1
+
+Sai24:
+  type: article
+  title: Leanを用いたGödelの第一・第二不完全性定理の形式化
+  url: https://iehality.github.io/ffl-slides/main.pdf
+  author: 齋藤, 彰悟
+  date: 2024-12-05
+  
+Car26:
+  type: article
+  title: "CIC + EM ⊢ Con(ZF): the consistency of ZF in type theory with excluded middle and no choice"
+  url: https://arxiv.org/abs/2609.23143
+  author: Carneiro, Mario
+  date: 2026-09-19
+
+Car19:
+  type: thesis
+  title: The {Type Theory} of {Lean}
+  author: Carneiro, Mario
+  date: 2019
+  organization: Carnegie Mellon University
+  abstract: Meta-theoretic properties of Lean 3, including soundness.
+  genre: Master's thesis
+
+CarL4LM: 
+  type: Misc
+  author: Carneiro, Mario
+  title: lean4lean-model
+  url: https://github.com/nomeata/lean-inductive-models
+  date: 2026-09-19
+
+Alwe260929:
+  type: Misc
+  author: "@Alwe_Logic"
+  title: https://x.com/Alwe_Logic/status/2099488711427973188
+  url: https://x.com/Alwe_Logic/status/2099488711427973188
+  date: 2026-09-14
+
+dM260801:
+  type: Misc
+  author: "de Moura, Leonardo"
+  title: "Postmortem for Kernel Soundness Bug #14576" 
+  date: 2026-08-01
+
+Kum260726:
+  type: Misc
+  author: Ramana, Kumar
+  title: "CollatzLean" 
+  date: 2026-07-26
+
+EqationalTheories:
+  type: article
+  title: "The Equational Theories Project: Advancing Collaborative Mathematical Research at Scale"
+  author:
+    - Matthew Bolan 
+    - Joachim Breitner
+    - Jose Brox
+    - Nicholas Carlini
+    - Mario Carneiro
+    - Floris van Doorn
+    - Martin Dvorak
+    - Andrés Goens
+    - Aaron Hill
+    - Harald Husum
+    - Hernán Ibarra Mejia
+    - Zoltan A. Kocsis
+    - Bruno Le Floch
+    - Amir Livne Bar-on
+    - Lorenzo Luccioli
+    - Douglas McNeil
+    - Alex Meiburg
+    - Pietro Monticone
+    - Pace P. Nielsen
+    - Emmanuel Osalotioman Osazuwa
+    - Giovanni Paolini
+    - Marco Petracci
+    - Bernhard Reinke
+    - David Renshaw
+    - Marcus Rossel
+    - Cody Roux
+    - Jérémy Scanvic
+    - Shreyas Srinivas
+    - Anand Rao Tadipatri
+    - Terence Tao
+    - Vlad Tsyrklevich
+    - Fernando Vaquerizo-Villar
+    - Daniel Weber
+    - Fan Zheng
+  
+SN26:
+  type: article
+  title: "Mechanizing Gödel's Incompleteness Theorems and Provability Logic"
+  url: https://arxiv.org/abs/2609.13780
+  author:
+    - Saitou, Shogo
+    - Noguchi, Mashū
+  date: 2026-09-15
