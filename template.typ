@@ -15,7 +15,7 @@
   background: color.hsl(240deg, 31.18%, 98%),
   foreground: _foreground,
   secondary: oklch(_foreground).lighten(50%),
-  accent: color.hsl(340deg, 77.08%, 50.39%),
+  accent: color.hsl(331.96deg, 80.7%, 55.29%),
 )
 
 // QR コードは背景を透明にし，文字色で描く．
@@ -406,7 +406,7 @@
   // 数式内の日本語が OS 既定のフォントにならないよう，数式フォントの後ろに本文フォントを足す．
   show math.equation: set text(font: ("New Computer Modern Math", "Shippori Antique"))
   show raw: set text(font: "JuliaMono", size: 1em)
-  show raw.where(block: true): set text(size: .8em)
+  show raw.where(block: true): set text(size: 0.9em)
   show link: set text(font: "JuliaMono", fill: theme-colors.accent)
   show footnote.entry: set text(size: .75em, fill: theme-colors.secondary)
   set footnote.entry(separator: line(length: 30%, stroke: .5pt + theme-colors.secondary))

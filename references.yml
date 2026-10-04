@@ -340,3 +340,505 @@ SN26:
     - Saitou, Shogo
     - Noguchi, Mashū
   date: 2026-09-15
+
+God31:
+  type: article
+  title: Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme I
+  author: Gödel, Kurt
+  date: 1931
+  page-range: 173-198
+  serial-number:
+    doi: 10.1007/BF01700692
+    issn: 0026-9255
+  parent:
+    type: periodical
+    title: Monatshefte für Mathematik und Physik
+    volume: 38
+
+Lob55:
+  type: article
+  title: Solution of a Problem of {Leon Henkin}
+  author: Löb, M. H.
+  date: 1955
+  page-range: 115-118
+  serial-number:
+    doi: 10.2307/2266895
+    issn: 0022-4812
+  parent:
+    type: periodical
+    title: The Journal of Symbolic Logic
+    volume: 20
+
+Sol76:
+  type: article
+  title: Provability Interpretations of Modal Logic
+  author: Solovay, Robert M.
+  date: 1976-09
+  page-range: 287-304
+  serial-number:
+    doi: 10.1007/BF02757006
+    issn: 0021-2172, 1565-8511
+  parent:
+    type: periodical
+    title: Israel Journal of Mathematics
+    issue: 3-4
+    volume: 25
+
+HB39:
+  type: book
+  title: Grundlagen der Mathematik. Bd. 2
+  author:
+    - Hilbert, David
+    - Bernays, Paul
+  date: 1939
+  publisher: Springer
+  location: Berlin
+  volume: 50
+  parent:
+    type: book
+    title: Grundlehren der mathematischen Wissenschaften
+
+TMR53:
+  type: book
+  title: Undecidable Theories
+  author:
+    - Tarski, Alfred
+    - Mostowski, Andrzej
+    - Robinson, Raphael M.
+  date: 1953
+  publisher:
+    name: North-Holland
+    location: Amsterdam
+  parent:
+    type: book
+    title: Studies in Logic and the Foundations of Mathematics
+
+Vau62:
+  type: chapter
+  title: On a Theorem of {Cobham} Concerning Undecidable Theories
+  author: Vaught, R. L.
+  date: 1962
+  page-range: 14-25
+  parent:
+    type: anthology
+    title: Logic, Methodology and Philosophy of Science. Proceedings of the 1960 International Congress
+    editor:
+      - Nagel, Ernest
+      - Suppes, Patrick
+      - Tarski, Alfred
+    publisher:
+      name: Stanford University Press
+      location: Stanford, CA
+
+Tai68:
+  type: chapter
+  title: Normal Derivability in Classical Logic
+  author: Tait, W. W.
+  date: 1968
+  page-range: 204-236
+  serial-number:
+    doi: 10.1007/BFb0079691
+  parent:
+    type: anthology
+    title: The Syntax and Semantics of Infinitary Languages
+    editor: Barwise, Jon
+    publisher:
+      name: Springer
+      location: Berlin, Heidelberg
+    volume: 72
+
+Avi01:
+  type: article
+  title: Algebraic Proofs of Cut Elimination
+  author: Avigad, Jeremy
+  date: 2001-09
+  page-range: 15-30
+  serial-number:
+    doi: 10.1016/S1567-8326(01)00009-1
+    issn: 1567-8326
+  parent:
+    type: periodical
+    title: The Journal of Logic and Algebraic Programming
+    issue: 1-2
+    volume: 49
+
+Avi04:
+  type: article
+  title: Forcing in Proof Theory
+  author: Avigad, Jeremy
+  date: 2004
+  page-range: 305-333
+  serial-number:
+    doi: 10.2178/bsl/1102022660
+    issn: 1079-8986
+  parent:
+    type: periodical
+    title: The Bulletin of Symbolic Logic
+    issue: 3
+    volume: 10
+
+Boo94:
+  type: book
+  title: The Logic of Provability
+  author: Boolos, George
+  date: 1994
+  publisher:
+    name: Cambridge University Press
+    location: Cambridge
+  serial-number:
+    doi: 10.1017/CBO9780511625183
+    isbn: 978-0-521-48325-4
+
+Smo85:
+  type: book
+  title: Self-Reference and Modal Logic
+  author: Smoryński, C.
+  date: 1985-04
+  publisher:
+    name: Springer New York
+    location: New York, NY
+  serial-number:
+    doi: 10.1007/978-1-4613-8601-8
+    isbn: 978-0-387-96209-2 978-1-4613-8601-8
+  parent:
+    type: book
+    title: Universitext
+
+Ver24:
+  type: web
+  title: Provability Logic
+  author: Verbrugge, Rineke
+  date: 2024
+  url:
+    value: https://plato.stanford.edu/archives/sum2024/entries/logic-provability/
+    date: 2026-07-27
+  parent:
+    type: web
+    title: The Stanford Encyclopedia of Philosophy (Summer 2024 Edition)
+    editor:
+      - Zalta, Edward N.
+      - Nodelman, Uri
+
+
+dMU21:
+  type: chapter
+  title: The Lean 4 Theorem Prover and Programming Language
+  author:
+    - name: de Moura
+      given-name: Leonardo
+    - Ullrich, Sebastian
+  date: 2021
+  page-range: 625-635
+  serial-number:
+    doi: 10.1007/978-3-030-79876-5_37
+    isbn: 978-3-030-79875-8
+  parent:
+    type: anthology
+    title: "Automated Deduction – CADE 28: 28th International Conference on Automated Deduction, Virtual Event, July 12–15, 2021, Proceedings"
+    publisher:
+      name: Springer-Verlag
+      location: Berlin, Heidelberg
+
+Mathlib2020:
+  type: chapter
+  title: The Lean Mathematical Library
+  author:
+    - name: The mathlib Community
+  date: 2020-01
+  page-range: 367-381
+  serial-number:
+    doi: 10.1145/3372885.3373824
+  parent:
+    type: anthology
+    title: Proceedings of the 9th ACM SIGPLAN International Conference on Certified Programs and Proofs
+    publisher:
+      name: ACM
+      location: New Orleans, LA, USA
+
+Sha86:
+  type: thesis
+  title: Proof-Checking Metamathematics (Theorem-Proving)
+  author: Shankar, Natarajan
+  date: 1986
+  organization: The University of Texas at Austin
+  genre: Ph.D. thesis
+
+OCo05:
+  type: chapter
+  title: Essential Incompleteness of Arithmetic Verified by Coq
+  author: "O'Connor, Russell"
+  date: 2005
+  page-range: 245-260
+  serial-number:
+    doi: 10.1007/11541868_16
+    isbn: 978-3-540-31820-0
+  parent:
+    type: anthology
+    title: Theorem Proving in Higher Order Logics
+    editor:
+      - Hurd, Joe
+      - Melham, Tom
+    publisher:
+      name: Springer Berlin Heidelberg
+      location: Berlin, Heidelberg
+
+Pau14:
+  type: article
+  title: A Machine-Assisted Proof of Gödel's Incompleteness Theorems for the Theory of Hereditarily Finite Sets
+  author: Paulson, Lawrence C.
+  date: 2014
+  page-range: 484-498
+  serial-number:
+    doi: 10.1017/S1755020314000112
+  parent:
+    type: periodical
+    title: The Review of Symbolic Logic
+    issue: 3
+    volume: 7
+
+PT21:
+  type: article
+  title: Distilling the Requirements of Gödel's Incompleteness Theorems with a Proof Assistant
+  author:
+    - Popescu, Andrei
+    - Traytel, Dmitriy
+  date: 2021-01
+  page-range: 1027-1070
+  serial-number:
+    doi: 10.1007/s10817-021-09599-8
+    issn: 0168-7433, 1573-0670
+  parent:
+    type: periodical
+    title: Journal of Automated Reasoning
+    issue: 7
+    volume: 65
+
+KP23:
+  type: chapter
+  title: Gödel's Theorem Without Tears – Essential Incompleteness in Synthetic Computability
+  author:
+    - Kirst, Dominik
+    - Peters, Benjamin
+  date: 2023
+  page-range: 30:1-30:18
+  serial-number:
+    doi: 10.4230/LIPIcs.CSL.2023.30
+    isbn: 978-3-95977-264-8
+    issn: 1868-8969
+  parent:
+    type: anthology
+    title: 31st EACSL Annual Conference on Computer Science Logic (CSL 2023)
+    editor:
+      - Klin, Bartek
+      - Pimentel, Elaine
+    publisher:
+      name: Schloss Dagstuhl – Leibniz-Zentrum für Informatik
+      location: Dagstuhl, Germany
+    volume: 252
+
+Bai24:
+  type: thesis
+  title: Löb's Theorem and Provability Predicates in Coq
+  author: Bailitis, Janis
+  date: 2024-08
+  organization: Saarland University
+  genre: Bachelor's thesis
+
+MPB21:
+  type: chapter
+  title: A Formal Proof of Modal Completeness for Provability Logic
+  author:
+    - Maggesi, Marco
+    - Perini Brogi, Cosimo
+  date: 2021
+  page-range: 26:1-26:18
+  serial-number:
+    doi: 10.4230/LIPIcs.ITP.2021.26
+    isbn: 978-3-95977-188-7
+    issn: 1868-8969
+  parent:
+    type: anthology
+    title: 12th International Conference on Interactive Theorem Proving (ITP 2021)
+    editor:
+      - Cohen, Liron
+      - Kaliszyk, Cezary
+    publisher:
+      name: Schloss Dagstuhl – Leibniz-Zentrum für Informatik
+      location: Dagstuhl, Germany
+    volume: 193
+
+MPB23:
+  type: article
+  title: Mechanising Gödel–Löb Provability Logic in HOL Light
+  author:
+    - Maggesi, Marco
+    - Perini Brogi, Cosimo
+  date: 2023-07
+  serial-number:
+    doi: 10.1007/s10817-023-09677-z
+    issn: 0168-7433, 1573-0670
+  parent:
+    type: periodical
+    title: Journal of Automated Reasoning
+    issue: 3
+    volume: 67
+
+BMPB25:
+  type: chapter
+  title: A Modular Proof of Semantic Completeness for Normal Systems beyond the Modal Cube, Formalised in HOLMS
+  author:
+    - Bilotta, Antonella
+    - Maggesi, Marco
+    - Perini Brogi, Cosimo
+  date: 2025
+  page-range: 154-162
+  parent:
+    type: anthology
+    title: 26th Italian Conference on Theoretical Computer Science
+    publisher:
+      location: Pescara
+    volume: 4039
+
+BMPB26:
+  type: chapter
+  title: A Modular Framework for Proof-Search via Formalised Modal Completeness in HOL Light
+  author:
+    - Bilotta, Antonella
+    - Maggesi, Marco
+    - Perini Brogi, Cosimo
+  date: 2026
+  page-range: 18:1-18:29
+  serial-number:
+    doi: 10.4230/LIPICS.CSL.2026.18
+    isbn: 9783959774116
+    issn: 1868-8969
+  parent:
+    type: anthology
+    title: Computer Science Logic (CSL 2026)
+    editor:
+      - Guerrini, Stefano
+      - König, Barbara
+    publisher: Schloss Dagstuhl – Leibniz-Zentrum für Informatik
+    volume: 363
+
+AB05:
+  type: chapter
+  title: Provability Logic
+  author:
+    - Artemov, Sergei N.
+    - Beklemishev, Lev D.
+  date: 2005
+  page-range: 189-360
+  serial-number:
+    doi: 10.1007/1-4020-3521-7_3
+    isbn: 978-1-4020-3521-0
+  parent:
+    type: anthology
+    title: Handbook of Philosophical Logic, 2nd Edition
+    editor:
+      - Gabbay, D. M.
+      - Guenthner, F.
+    publisher:
+      name: Springer Netherlands
+      location: Dordrecht
+
+Bek90:
+  type: article
+  title: On the Classification of Propositional Provability Logics
+  author: Beklemishev, Lev D.
+  date: 1990-04
+  page-range: 247-275
+  serial-number:
+    doi: 10.1070/IM1990v035n02ABEH000701
+    issn: 0025-5726
+  parent:
+    type: periodical
+    title: Mathematics of the USSR-Izvestiya
+    issue: 2
+    volume: 35
+
+SV82:
+  type: article
+  title: The Modal Logic of Provability. The Sequential Approach
+  author:
+    - Sambin, Giovanni
+    - Valentini, Silvio
+  date: 1982-08
+  page-range: 311-342
+  serial-number:
+    doi: 10.1007/BF00293433
+  parent:
+    type: periodical
+    title: Journal of Philosophical Logic
+    issue: 3
+    volume: 11
+
+Bri16:
+  type: article
+  title: Cut Elimination for GLS Using the Terminability of Its Regress Process
+  author: Brighton, Jude
+  date: 2016
+  page-range: 147-153
+  serial-number:
+    doi: 10.1007/s10992-015-9368-4
+    issn: 0022-3611, 1573-0433
+  parent:
+    type: periodical
+    title: Journal of Philosophical Logic
+    issue: 2
+    volume: 45
+
+GRS21:
+  type: chapter
+  title: "Cut-Elimination for Provability Logic by Terminating Proof-Search: Formalised and Deconstructed Using Coq"
+  author:
+    - Goré, Rajeev
+    - Ramanayake, Revantha
+    - Shillito, Ian
+  date: 2021
+  page-range: 299-313
+  serial-number:
+    doi: 10.1007/978-3-030-86059-2_18
+    isbn: 978-3-030-86058-5 978-3-030-86059-2
+  parent:
+    type: anthology
+    title: Automated Reasoning with Analytic Tableaux and Related Methods
+    editor:
+      - Das, Anupam
+      - Negri, Sara
+    publisher:
+      name: Springer International Publishing
+      location: Cham
+    volume: 12842
+
+GR12:
+  type: article
+  title: Valentini's Cut-Elimination for Provability Logic Resolved
+  author:
+    - Goré, Rajeev
+    - Ramanayake, Revantha
+  date: 2012-06
+  page-range: 212-238
+  serial-number:
+    doi: 10.1017/S1755020311000323
+    issn: 1755-0203, 1755-0211
+  parent:
+    type: periodical
+    title: The Review of Symbolic Logic
+    issue: 2
+    volume: 5
+
+Neg05:
+  type: article
+  title: Proof Analysis in Modal Logic
+  author: Negri, Sara
+  date: 2005-10
+  page-range: 507-544
+  serial-number:
+    doi: 10.1007/s10992-005-2267-3
+    issn: 0022-3611, 1573-0433
+  parent:
+    type: periodical
+    title: Journal of Philosophical Logic
+    issue: 5-6
+    volume: 34
