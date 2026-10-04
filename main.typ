@@ -482,10 +482,31 @@ $T$ としてPeano算術 $PA$ を取ることが出来る．
 == Kripke意味論
 
 実用上はフレームのみを考えることは殆どないので，モデルだけを考えたほうが実装がスッキリする．
+#let PropVer = $upright("Prop")$
+
+#definition[Kripkeモデル][
+  非空集合 $W$ とその上の2項関係 $prec : W times W -> 2$，付値関数 $V : W times PropVer -> 2$ の組 $chevron.l W, prec, V chevron.r$ をKripkeモデルという．強制関係(Forces)を以下で定める．
+
+  - $x forces p <==> x V p$．
+  - $x forces box A <==> forall y, x prec y -> y forces A$．
+]
+
+Leanでは，型 `κ` 上の構造として定義する．#footnote[universeを自由にすることが出来ることは完全性定理などでそれなりに問題になるが，無視する．]
+
+#pagebreak()
+
+#let rank = $upright("rank")$
+#let height = $upright("hgt")$
 
 #definition[
-  有限 $LogicGL$-モデルとは非反射的で逆整礎的：$x_1 prec x_2 prec dots prec x_n$ が有限の $n$ 回遷移出来るとする．
+  - *$LogicGL$-モデル*とは $prec$ が推移的で逆整礎的：$x_1 prec x_2 prec dots prec x_n$ が有限の $n$ 回遷移しか出来ないとする．
+    - 故に $LogicGL$-モデルには点 $x$ から最大何回遷移できるか：*ランク $rank(x)$* が定まる #footnote[技術的な面倒のため，Leanでの実装では有限モデルのみに対して定めている．]．
+  - *有限 $LogicGL$-モデル*とは $W$ が有限で $prec$ が推移的で非反射的なモデルとする．
+  - モデルが*根付き*とは根 $r_M$ があって任意の $x in M setminus {r_M}$ に対し $r_M prec x$．
+    - 根付きモデルの高さとは $rank(r_M)$ とする．
 ]
+
+
 
 #pagebreak()
 
@@ -502,11 +523,61 @@ $T$ としてPeano算術 $PA$ を取ることが出来る．
 @SV82 の $LogicGL$ のシークエント計算を機械化する．
 Kripke意味論の完全性はこちらのほうがはるかに簡単に証明がスッキリする #footnote[$LogicGL$ は標準的な様相論理のカノニカルモデルの構成による証明は不可能．有限判例モデルを直接作るか，適当にモデルを同値で割って証明する．Hilbert流だと細かい部分の計算が煩雑になる．]．
 
-シークエントは*有限集合*とする．
+#let GentzenGL = $cal("G")_LogicGL$
+#let GentzenWithCutGL = $GentzenGL + ("Cut")$
+
+#definition[
+  *シークエント* $Gamma => Delta$ とは論理式の有限集合の組である．
+  $LogicGL$ のシークエント計算 $GentzenGL$ は次の規則からなる．
+  ただし (WL) と (WR) では $Gamma subset.eq Gamma'$，$Delta subset.eq Delta'$ とする．
+
+  #align(center)[
+    #text(size: 0.9em)[
+      #grid(
+        columns: 4,
+        column-gutter: 2em,
+        row-gutter: 1em,
+        align: center + horizon,
+        prooftree(rule(name: [(Ax)], $A => A$)),
+        prooftree(rule(name: [($bot$L)], $bot =>$)),
+        prooftree(rule(name: [(WL)], $Gamma => Delta$, $Gamma' => Delta$)),
+        prooftree(rule(name: [(WR)], $Gamma => Delta$, $Gamma => Delta'$)),
+        prooftree(rule(
+          name: [($->$L)],
+          $Gamma => A, Delta$,
+          $B, Gamma => Delta$,
+          $A -> B, Gamma => Delta$,
+        )),
+        prooftree(rule(name: [($->$R)], $A, Gamma => B, Delta$, $Gamma => A -> B, Delta$)),
+        grid.cell(colspan: 2, prooftree(rule(
+          name: [($box_LogicGL$)],
+          $box A, Gamma, box Gamma => A$,
+          $box Gamma => box A$,
+        ))),
+      )
+    ]
+  ]
+]
 
 #pagebreak()
 
-完全性定理から意味論的カット除去
+#theorem[#GentzenGL の完全性定理][
+  $GentzenGL proves Gamma => Delta$ と任意の有限 $LogicGL$-モデル $M$ で $M models and.big Gamma -> or.big Delta$ であることは同値．
+]
+
+完全性定理から意味論的カット除去定理（カット許容）であることがすぐに従う．
+
+#theorem[#GentzenGL のカット除去定理][
+  カット規則は #GentzenGL で許容される．
+  #align(center)[
+    #prooftree(rule(
+      name: [(Cut)],
+      $Gamma_1 => Delta_1, A$,
+      $A, Gamma_2 => Delta_2$,
+      $Gamma_1, Gamma_2 => Delta_1, Delta_2$,
+    ))
+  ]
+]
 
 #pagebreak()
 
@@ -524,9 +595,8 @@ Kripke意味論の完全性はこちらのほうがはるかに簡単に証明�
 
 今回は我々の関心外であるためカット除去は意味論的に行ったが，構文論的なカット除去も可能である．
 
-シークエントが有限集合ではなくリストや多重集合である場合の構文論的なカット除去は本当に帰納法が回っていたのか最近まで不明であった @GR12．（*3重帰納法*によって示される．）
-
-新しい方法 @Bri16 が提案されていて，それがうまくいくということは @GRS21 がRocqで検証している．
+シークエントが有限集合ではなくリストや多重集合である場合の構文論的なカット除去は本当に帰納法が回っていたのか最近まで不明であった．（@GR12 で*3重帰納法*によって示される．）
+@Bri16 が新しい方法を提案していて，それがうまくいくということは @GRS21 がRocqで検証している．
 
 == 様相論理 $LogicGL$ のシークエント計算の余談: 自動証明
 
@@ -607,7 +677,6 @@ $PL(T, U)$ の $T, U$ を動かすとどうなるかは @Bek90 によって完�
 ]
 
 #let TA = $Arith("TA")$
-#let height(H) = $upright("hgt")(#H)$
 
 #definition[
   論理式 $A$ のトレース $ tr(A) := \{ n in NN : #text[$r_M forces.not A$ となる 高さ $n$ の有限根付きモデル $M$ が存在] \} $
