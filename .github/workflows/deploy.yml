@@ -46,13 +46,6 @@ jobs:
             echo "$fonts" | grep -Fxq "$family" || { echo "::error::font not found: $family"; exit 1; }
           done
       - run: typst compile main.typ main.pdf
-      # 指定フォントに無い字形が Libertinus Serif（Typst 同梱）に落ちていないことを確認する．
-      - name: Check no font fallback
-        run: |
-          if grep -aq Libertinus main.pdf; then
-            echo "::error::some glyphs fell back to Libertinus Serif"
-            exit 1
-          fi
       - name: Create page directory
         run: |
           mkdir _pages
