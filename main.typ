@@ -138,6 +138,7 @@ Lean 4は型理論としてCalculus of Inductive ($CIC$) を採用している�
 
 最近のニュース: @Kum260726 はCollatz予想の反証をLean v4.32.1 で形式化した．
 
+#leancode[
 ```lean
 -- `n` はCollatzの操作を何度行っても1にならない．
 def Diverges (n : Nat) : Prop := 0 < n ∧ ∀ k, iterate step k n ≠ 1
@@ -145,6 +146,7 @@ def Diverges (n : Nat) : Prop := 0 < n ∧ ∀ k, iterate step k n ≠ 1
 -- そのような `n` が存在する．
 theorem exists_nonterminating_orbit : ∃ n, Diverges n :
 ```
+]
 
 もちろん#footnote[この講演が行われた当時は少なくとも]このような上手い話があるわけがなく，これはLeanの*ソフトウェアとしての*実装のバグに由来するものであった（詳しい解説は @dM260801）．
 
@@ -189,9 +191,11 @@ theorem exists_nonterminating_orbit : ∃ n, Diverges n :
 
 いくつかの条件は改良できる(後述)．
 
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/First.lean"),))[
 ```lean
 theorem incomplete (T : ArithmeticTheory) [T.Δ₁] [𝗥₀ ⪯ T] [T.SoundOnHierarchy 𝚺 1] : Incomplete T
 ```
+]
 
 == 論理式
 
@@ -199,6 +203,7 @@ theorem incomplete (T : ArithmeticTheory) [T.Δ₁] [𝗥₀ ⪯ T] [T.SoundOnHi
 
 $ phi, psi ::= top | bot | R(arrow(v)) | not R(arrow(v)) | phi and psi | phi or psi | forall phi | exists phi $
 
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Basic/Syntax/Formula.lean"),))[
 ```lean
   inductive Semiformula (L : Language) (ξ : Type*) : ℕ → Type _ where
   |  verum : Semiformula L ξ n
@@ -210,6 +215,7 @@ $ phi, psi ::= top | bot | R(arrow(v)) | not R(arrow(v)) | phi and psi | phi or 
   |    all : Semiformula L ξ (n + 1) → Semiformula L ξ n
   |    exs : Semiformula L ξ (n + 1) → Semiformula L ξ n
 ```
+]
 
 - `Formula L ξ` を `Semiformula L ξ 0` の略記（束縛変数無し）
 - `Semisentence L 0` を `Semiformula L Empty n` の略記（自由変数無し）
@@ -251,6 +257,7 @@ $ phi, psi ::= top | bot | R(arrow(v)) | not R(arrow(v)) | phi and psi | phi or 
 ]
 
 
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Basic/Calculus.lean"),))[
 ```lean
 inductive LK.Derivation : LK.Sequent L → Type _
 | identity (r : L.Rel k) (v) : LK.Derivation ⦃.rel r v, .nrel r v⦄
@@ -263,14 +270,17 @@ inductive LK.Derivation : LK.Sequent L → Type _
 | all : LK.Derivation (Γ⁺ + ⦃φ.free⦄) → LK.Derivation (Γ + ⦃∀¹ φ⦄)
 | exs : LK.Derivation (Γ + ⦃φ/[t]⦄) → LK.Derivation (Γ + ⦃∃¹ φ⦄)
 ```
+]
 
 #pagebreak()
 
 カット無しの証明図へ変換する具体的な計算手続きを定める #footnote[証明図の帰納法による愚直な証明は機械化において煩雑で面倒なので，@Avi01 @Avi04 による直観主義述語論理への還元および強制法的な議論による．]ことで，#LK ではカット除去定理を機械化出来る #footnote[ただしこれが現実的にLeanで計算可能なのかはわからない．]．
 
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Hauptsatz.lean"),))[
 ```lean
 def hauptsatz {Γ : LK.Sequent L} : ⊢ᴸᴷ¹ Γ → {d : ⊢ᴸᴷ¹ Γ // LK.Derivation.IsCutFree d}
 ```
+]
 
 言語 $L$ の理論 $T$ を $L$-文の集合 `Set (Sentence L)` とする．
 
@@ -279,11 +289,13 @@ def hauptsatz {Γ : LK.Sequent L} : ⊢ᴸᴷ¹ Γ → {d : ⊢ᴸᴷ¹ Γ // LK
 
 カット除去定理からカノニカルモデルを作るなどの議論を行って，完全性定理を得る．
 
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Completeness/CounterModel.lean"),))[
 ```lean
 theorem small_satisfiable_of_consistent : Consistent T → Satisfiable T
 
 theorem Proof.complete_iff : T ⊨ φ ↔ T ⊢ φ := ⟨fun h ↦ Proof.complete h, Proof.sound⟩
 ```
+]
 
 == 算術
 
@@ -326,15 +338,18 @@ Mathlibなどが提供する代数的な構造に対しての様々な補題や�
 
 算術 $T$ の任意のモデル $V$ を固定する．
 
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Arithmetic/IOpen/Basic.lean"),))[
 ```lean
   variable {V : Type*} [ORingStruc V] [V ⊧ₘ* T]
 ```
+]
 
 - `ORingStruc V`: $V$ が言語 $cal(L)_"OR"$ の構造であることを主張するtypeclass.
 - `V ⊧ₘ* T`: $V$ が理論 $T$ を満たすことを主張するtypeclass.
 
 $V$ 上で機械化を行う．関数は選択関数を用いて定義出来る．
 
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Arithmetic/IOpen/Basic.lean"),))[
 ```lean
   lemma sqrt_exists_unique (a : V) : ∃! x, x * x ≤ a ∧ a < (x + 1) * (x + 1) := by ...
 
@@ -343,6 +358,7 @@ $V$ 上で機械化を行う．関数は選択関数を用いて定義出来る�
 
   lemma sqrt_mul_self (a : V) : √(a * a) = a := by ...
 ```
+]
 
 == メタ数学の算術化
 
@@ -386,9 +402,11 @@ $R0$ では表現定理が成り立つ #footnote[もちろんRobinson算術 や 
   ゆえに $T$ が完全なら無矛盾性に反する．
 ]
 
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/First.lean"),))[
 ```lean
 theorem incomplete (T : ArithmeticTheory) [T.Δ₁] [𝗥₀ ⪯ T] [T.SoundOnHierarchy 𝚺 1] : Incomplete T
 ```
+]
 
 ここで `Incomplete T` は `∃ φ, T ⊬ φ ∧ T ⊬ ∼φ` の略記．
 

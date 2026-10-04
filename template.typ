@@ -73,6 +73,56 @@
   inset: (left: 12pt, top: 5pt, bottom: 8pt),
 )[#body]
 
+// Lean のコード．
+
+// リンクのパスの先頭ディレクトリ（リポジトリ名）から宛先リポジトリを解決する．
+#let REPO_SOURCES = (
+  "Foundation": "https://github.com/FormalizedFormalLogic/Foundation/blob/v1",
+  "ProvabilityLogic": "https://github.com/FormalizedFormalLogic/ProvabilityLogic/blob/v1",
+)
+// リンクは (リポジトリ名, リポジトリ内パス) のタプルで指定する．
+#let lean-link(index, l) = {
+  let (repo, path) = l
+  link(REPO_SOURCES.at(repo) + "/" + path)[#(index + 1)]
+}
+
+/// Lean のコードブロック．
+/// - code: ```` ```lean ... ``` ```` を一つ含む content．
+/// - links: 抜粋元の `(リポジトリ名, パス)` の配列．
+/// - size: コードの文字サイズ．
+#let leancode(code, links: (), size: 0.9em) = {
+  let code-text = if code.func() == raw {
+    code.text
+  } else {
+    let raw-elem = code.children.find(it => it.func() == raw)
+    if raw-elem != none { raw-elem.text } else { "" }
+  }
+  block(
+    width: 100%,
+    above: 0.8em,
+    below: if links.len() > 0 { 0.3em } else { 0.8em },
+    fill: theme-colors.background.darken(3%),
+    radius: 0.3em,
+    inset: 0.7em,
+    breakable: false,
+    {
+      set text(size: size, font: "JuliaMono")
+      raw(lang: "lean", block: true, syntaxes: "assets/Lean.sublime-syntax", code-text)
+    },
+  )
+  if links.len() > 0 {
+    block(
+      width: 100%,
+      above: 0.3em,
+      below: 0.8em,
+      align(right, text(size: 0.6em, fill: theme-colors.secondary)[
+        #smallcaps[Source:]
+        #links.enumerate().map(((index, li)) => lean-link(index, li)).join(h(0.4em))
+      ]),
+    )
+  }
+}
+
 /// 通常のスライド．
 #let slide(
   config: (:),
