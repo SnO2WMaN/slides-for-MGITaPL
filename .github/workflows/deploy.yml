@@ -21,13 +21,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      # main.typ / template.typ が使うフォント（"New Computer Modern Math" は Typst 同梱）．
+      - name: Install "Shippori Antique"
+        uses: SnO2WMaN/install-fontsource-action@v0.0.3
+        with:
+          font-name: Shippori Antique
       - name: Install "Shippori Antique B1"
         uses: SnO2WMaN/install-fontsource-action@v0.0.3
         with:
           font-name: Shippori Antique B1
+      - name: Install "Geist"
+        uses: SnO2WMaN/install-fontsource-action@v0.0.3
+        with:
+          font-name: Geist
       - name: Install "Julia Mono"
         uses: SnO2WMaN/install-juliamono-action@v0.0.1
       - uses: typst-community/setup-typst@v5
+      - name: Check fonts
+        run: |
+          fonts="$(typst fonts)"
+          for family in "Shippori Antique" "Shippori Antique B1" "Geist" "JuliaMono" "New Computer Modern Math"; do
+            echo "$fonts" | grep -Fxq "$family" || { echo "::error::font not found: $family"; exit 1; }
+          done
       - run: typst compile main.typ main.pdf
       - name: Create page directory
         run: |
