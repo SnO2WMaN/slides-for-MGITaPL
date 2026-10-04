@@ -22,18 +22,20 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       # main.typ / template.typ が使うフォント（"New Computer Modern Math" は Typst 同梱）．
-      - name: Install "Shippori Antique"
-        uses: SnO2WMaN/install-fontsource-action@v0.0.3
-        with:
-          font-name: Shippori Antique
-      - name: Install "Shippori Antique B1"
-        uses: SnO2WMaN/install-fontsource-action@v0.0.3
-        with:
-          font-name: Shippori Antique B1
-      - name: Install "Geist"
-        uses: SnO2WMaN/install-fontsource-action@v0.0.3
-        with:
-          font-name: Geist
+      # fontsource の配布物は Unicode 範囲ごとのサブセットに分かれており，Typst は同一ファミリ・
+      # 同一ウェイトのうち 1 ファイルしか選ばないため英字などが Libertinus Serif に落ちる．
+      # そのため google/fonts の完全版 TTF を，再現性のためコミットを固定して取得する．
+      - name: Install "Shippori Antique", "Shippori Antique B1" and "Geist"
+        env:
+          GOOGLE_FONTS_REV: 9710da1eacb3be272583c3224dcb70f9da6eadbb
+        run: |
+          base="https://raw.githubusercontent.com/google/fonts/$GOOGLE_FONTS_REV/ofl"
+          dir="$HOME/.local/share/fonts/google-fonts"
+          mkdir -p "$dir"
+          curl -fsSL -o "$dir/ShipporiAntique-Regular.ttf" "$base/shipporiantique/ShipporiAntique-Regular.ttf"
+          curl -fsSL -o "$dir/ShipporiAntiqueB1-Regular.ttf" "$base/shipporiantiqueb1/ShipporiAntiqueB1-Regular.ttf"
+          curl -fsSL -o "$dir/Geist[wght].ttf" "$base/geist/Geist%5Bwght%5D.ttf"
+          fc-cache -fv
       - name: Install "Julia Mono"
         uses: SnO2WMaN/install-juliamono-action@v0.0.1
       - uses: typst-community/setup-typst@v5
@@ -44,6 +46,13 @@ jobs:
             echo "$fonts" | grep -Fxq "$family" || { echo "::error::font not found: $family"; exit 1; }
           done
       - run: typst compile main.typ main.pdf
+      # 指定フォントに無い字形が Libertinus Serif（Typst 同梱）に落ちていないことを確認する．
+      - name: Check no font fallback
+        run: |
+          if grep -aq Libertinus main.pdf; then
+            echo "::error::some glyphs fell back to Libertinus Serif"
+            exit 1
+          fi
       - name: Create page directory
         run: |
           mkdir _pages
