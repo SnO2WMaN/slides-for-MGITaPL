@@ -14,21 +14,22 @@
 #let dia = $diamond.stroked$
 #let rhd = $triangle.r.stroked$
 
-#let FrameClass = $bb("F")$
-#let HilbertSystem = $frak("H")$
-#let Thm = $upright("Thm")$
-
 #let proves = $tack.r$
 #let nproves = $tack.r.not$
 #let models = $tack.rr$
 #let nmodels = $tack.rr.not$
+#let forces = $forces$
+#let nforces = $not(forces)$
 
-#let Bew = $frak("B")$
-
+#let Bew = $op(frak("B"))$
 #let Con = $bold(upright("Con"))$
 
+// 証明可能性条件（Hilbert-Bernays-Löb）
+#let D1 = $bold("D1")$
+#let D2 = $bold("D2")$
+#let D3 = $bold("D3")$
 
-#let Axiom(A) = $sans(upright(#A))$
+#let Axiom(A) = $upright(#A)$
 #let AxiomK = $Axiom("K")$
 #let AxiomT = $Axiom("T")$
 #let Axiom4 = $Axiom("4")$
@@ -42,19 +43,46 @@
 #let AxiomDot3 = $Axiom(".3")$
 
 #let Rule(R) = $upright((#R))$
-#let RuleMP = $Rule("MP")$
-#let RuleNec = $Rule("Nec")$
-#let RuleLoeb = $Rule("Löb")$
-#let RuleHenkin = $Rule("Henkin")$
+#let RuleWL = $Rule("WL")$
+#let RuleWR = $Rule("WL")$
 
+// 様相論理・シークエント計算
 #let Logic(L) = $bold(upright(#L))$
-#let LogicK = $Logic("K")$
-#let LogicF = $Logic("F")$
-#let LogicWF = $Logic("WF")$
-#let LogicVF = $Logic("VF")$
+#let LogicGL = $Logic("GL")$
+#let LogicD = Logic("D")
+#let LogicS = Logic("S")
+#let LogicA = Logic("A")
+#let LogicGLAlpha(X) = $Logic("GL"_alpha) (#X)$
+#let LogicGLBeta(X) = $Logic("GL"_beta) (#X)$
+
+#let GentzenGL = $cal("G")_LogicGL$
+#let GentzenWithCutGL = $GentzenGL + ("Cut")$
+
+// 証明可能性論理
+#let PL(T, U) = $upright("PL")_#T (#U)$
+
+// Kripkeモデル
+#let PropVer = $upright("Prop")$
+#let rank = $upright("rank")$
+#let height = $upright("hgt")$
+
+// 体系・算術
+#let CIC = $sans("CIC")$
+#let ZFC = $sans("ZFC")$
+#let Lean = $sans("Lean")$
+#let LK = $bold(upright("LK"))$
 
 #let Arith(A) = $sans(#A)$
 #let PA = $Arith("PA")$
+#let TA = $Arith("TA")$
+#let R0 = $Arith("R"_0)$
+#let ISigma1 = $upright(sans(I)) Sigma_1$
+#let LOR = $cal(L)_"OR"$
+
+// 算術化
+#let Rep(S) = $sans("Rep")_(#S)$
+#let godelize(x) = $lr(⌜ #x ⌝)$
+#let num(x) = $overline(#x)$
 
 #let And = $class("relation", \&)$
 
@@ -98,10 +126,6 @@
 = 定理証明支援系
 
 == Leanについて
-
-#let CIC = $sans("CIC")$
-#let ZFC = $sans("ZFC")$
-#let Lean = $sans("Lean")$
 
 Lean 4は型理論としてCalculus of Inductive ($CIC$) を採用している．
 原理上は#footnote[
@@ -153,9 +177,6 @@ theorem exists_nonterminating_orbit : ∃ n, Diverges n :
 
 == 不完全性定理
 
-#let R0 = $upright(sans(R_0))$
-#let ISigma1 = $upright(sans(I)) Sigma_1$
-
 次のGödelの不完全性定理の素朴なバージョンを機械化した．
 
 #theorem(numbering: none)[Gödelの第1不完全性定理(G1)][
@@ -196,14 +217,10 @@ $ phi, psi ::= top | bot | R(arrow(v)) | not R(arrow(v)) | phi and psi | phi or 
 
 #pagebreak()
 
-#let LOR = $cal(L)_"OR"$
-
 算術の言語 $LOR$ を定めて，Leanのマクロによる糖衣構文を用意する．
 例えばこんな感じで記述出来る．
 
 == 証明体系
-
-#let LK = $bold(upright("LK"))$
 
 古典1階述語論理のTait流のシークエント計算体系 #LK を用意する．シークエントは多重集合として定義する．
 
@@ -327,10 +344,6 @@ $V$ 上で機械化を行う．関数は選択関数を用いて定義出来る�
   lemma sqrt_mul_self (a : V) : √(a * a) = a := by ...
 ```
 
-#let Rep(S) = $sans("Rep")_(#S)$
-#let godelize(x) = $lr(⌜ #x ⌝)$
-#let num(x) = $overline(#x)$
-
 == メタ数学の算術化
 
 形式体系を算術の中でさらに形式化する#footnote[Formalizing \[Formalizing \[Formalizing mathematics in formal system\] in Arithmetic\] in Lean]：*算術化・Bootstraping*．
@@ -382,10 +395,6 @@ theorem incomplete (T : ArithmeticTheory) [T.Δ₁] [𝗥₀ ⪯ T] [T.SoundOnHi
 == 証明可能性の抽象化
 
 生の証明可能性述語を機械化で直接扱うと面倒なので，抽象化を導入する．
-
-#let D1 = $bold("D1")$
-#let D2 = $bold("D2")$
-#let D3 = $bold("D3")$
 
 #definition[証明可能性][
   1変数述語 $Bew$ が *$T_0$ 上の $T$-証明可能性 である*とは， $D1: T proves sigma ==> T_0 proves Bew sigma$ を任意の文 $sigma$ で満たすこととする．
@@ -461,8 +470,6 @@ $T$ としてPeano算術 $PA$ を取ることが出来る．
 - 不完全性定理において中心的な役割を果たす証明可能性述語*「$phi$ は $T$ で証明できる」*を様相だと思おう．
 - 証明可能性 $Bew$ をより様相論理的に扱う．
 
-#let LogicGL = $Logic("GL")$
-
 最重要の定理: *Solovayの算術的完全性定理．*
 
 #proposition(numbering: none)[Solovayの算術的完全性定理(ラフ)][
@@ -482,7 +489,6 @@ $T$ としてPeano算術 $PA$ を取ることが出来る．
 == Kripke意味論
 
 実用上はフレームのみを考えることは殆どないので，モデルだけを考えたほうが実装がスッキリする．
-#let PropVer = $upright("Prop")$
 
 #definition[Kripkeモデル][
   非空集合 $W$ とその上の2項関係 $prec : W times W -> 2$，付値関数 $V : W times PropVer -> 2$ の組 $chevron.l W, prec, V chevron.r$ をKripkeモデルという．強制関係(Forces)を以下で定める．
@@ -494,9 +500,6 @@ $T$ としてPeano算術 $PA$ を取ることが出来る．
 Leanでは，型 `κ` 上の構造として定義する．#footnote[universeを自由にすることが出来ることは完全性定理などでそれなりに問題になるが，無視する．]
 
 #pagebreak()
-
-#let rank = $upright("rank")$
-#let height = $upright("hgt")$
 
 #definition[
   - *$LogicGL$-モデル*とは $prec$ が推移的で逆整礎的：$x_1 prec x_2 prec dots prec x_n$ が有限の $n$ 回遷移しか出来ないとする．
@@ -522,9 +525,6 @@ Leanでは，型 `κ` 上の構造として定義する．#footnote[universeを�
 
 @SV82 の $LogicGL$ のシークエント計算を機械化する．
 Kripke意味論の完全性はこちらのほうがはるかに簡単に証明がスッキリする #footnote[$LogicGL$ は標準的な様相論理のカノニカルモデルの構成による証明は不可能．有限判例モデルを直接作るか，適当にモデルを同値で割って証明する．Hilbert流だと細かい部分の計算が煩雑になる．]．
-
-#let GentzenGL = $cal("G")_LogicGL$
-#let GentzenWithCutGL = $GentzenGL + ("Cut")$
 
 #definition[
   *シークエント* $Gamma => Delta$ とは論理式の有限集合の組である．
@@ -618,7 +618,7 @@ Kripke意味論の完全性はこちらのほうがはるかに簡単に証明�
 @SV82 ではさらにシークエント計算を使った応用として， $LogicGL$ のCraig補間定理と不動点補題を示している．
 
 これはかなり構文論的アルゴリズムがあり，それに従って実装すれば良い．
-$LogicGL$ の導出木を手作りすれば補間と不動点は構成的に計算できる #footnote[ただし殆どの場合そんなことはしなくて完全性から作るので意義はない．] #footnote[FenixもLeanで補間性定理などを示しているが，意味論的な制約により特殊なケースのみになっている．シークエント計算から一般に構成出来るというのはそれなりに利点に思える．]．
+$LogicGL$ の導出木を手作りすれば補間と不動点は構成的に計算できる #footnote[ただし殆どの場合そんなことはしなくて完全性から作るので意義はない．] #footnote[@Gig26 もLeanで補間性定理などを示しているが，意味論的な制約により特殊なケースのみになっている．シークエント計算から一般に構成出来るというのはそれなりに利点に思える．]．
 
 == 証明可能性論理
 
@@ -636,8 +636,6 @@ $LogicGL$ の $box$ と証明可能性 $Bew$ を結びつけよう．
 ただし今後は標準的な証明可能性述語 $box_T$ だけで議論するので $f_(box_T)(A)$ のみ考える．
 
 #pagebreak()
-
-#let PL(T, U) = $upright("PL")_#T (#U)$
 
 #definition[
   算術 $T, U$ とする． *$U$ 上の $T$ の証明可能性論理 $PL(T, U)$* を
@@ -661,12 +659,6 @@ $LogicGL$ の $box$ と証明可能性 $Bew$ を結びつけよう．
 
 $PL(T, U)$ の $T, U$ を動かすとどうなるかは @Bek90 によって完全に分類されている．
 
-#let LogicD = Logic("D")
-#let LogicS = Logic("S")
-#let LogicA = Logic("A")
-#let LogicGLAlpha(X) = $Logic("GL"_alpha) (#X)$
-#let LogicGLBeta(X) = $Logic("GL"_beta) (#X)$
-
 #definition[
   以下の論理を定める．$LogicGL + X$ は $X$ とのunionのMPの閉包（非正規拡大）．
   - $LogicGLAlpha(X) := LogicGL + { box^(n + 1) bot -> box^n bot : n in X}$．
@@ -676,10 +668,8 @@ $PL(T, U)$ の $T, U$ を動かすとどうなるかは @Bek90 によって完�
   - $LogicS := LogicGL + box A -> A$．
 ]
 
-#let TA = $Arith("TA")$
-
 #definition[
-  論理式 $A$ のトレース $ tr(A) := \{ n in NN : #text[$r_M forces.not A$ となる 高さ $n$ の有限根付きモデル $M$ が存在] \} $
+  論理式 $A$ のトレース $ tr(A) := \{ n in NN : #text[$r_M nforces A$ となる 高さ $n$ の有限根付きモデル $M$ が存在] \} $
   論理 $L$ のトレース $tr(L) := union.big_(A in L) tr(A)$．
 ]
 

@@ -842,3 +842,11 @@ Neg05:
     title: Journal of Philosophical Logic
     issue: 5-6
     volume: 34
+
+Gig26:
+  type: thesis
+  title: Proofs as Coalgebras
+  author: Gignoux, Madeleine
+  date: 2026-05
+  organization: Universiteit van Amsterdam
+  genre: Master's thesis
