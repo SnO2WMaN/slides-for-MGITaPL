@@ -36,13 +36,20 @@ jobs:
           curl -fsSL -o "$dir/ShipporiAntiqueB1-Regular.ttf" "$base/shipporiantiqueb1/ShipporiAntiqueB1-Regular.ttf"
           curl -fsSL -o "$dir/Geist[wght].ttf" "$base/geist/Geist%5Bwght%5D.ttf"
           fc-cache -fv
-      - name: Install "Julia Mono"
-        uses: SnO2WMaN/install-juliamono-action@v0.0.1
+      - name: Install "Juisee"
+        env:
+          JUISEE_VERSION: v0.2.0
+        run: |
+          dir="$HOME/.local/share/fonts/juisee"
+          mkdir -p "$dir"
+          curl -fsSL -o "$RUNNER_TEMP/juisee.zip" "https://github.com/yuru7/juisee/releases/download/$JUISEE_VERSION/Juisee_$JUISEE_VERSION.zip"
+          unzip -j "$RUNNER_TEMP/juisee.zip" "Juisee_$JUISEE_VERSION/Juisee-*.ttf" -d "$dir"
+          fc-cache -fv
       - uses: typst-community/setup-typst@v5
       - name: Check fonts
         run: |
           fonts="$(typst fonts)"
-          for family in "Shippori Antique" "Shippori Antique B1" "Geist" "JuliaMono" "New Computer Modern Math"; do
+          for family in "Shippori Antique" "Shippori Antique B1" "Geist" "Juisee" "New Computer Modern Math"; do
             echo "$fonts" | grep -Fxq "$family" || { echo "::error::font not found: $family"; exit 1; }
           done
       - run: typst compile main.typ main.pdf

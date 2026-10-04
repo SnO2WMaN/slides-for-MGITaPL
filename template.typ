@@ -352,7 +352,7 @@
   header-title: utils.display-current-heading(level: 2, style: auto),
   header-right: self => context {
     text(
-      font: "JuliaMono",
+      font: "Juisee",
       utils.slide-counter.display() + "/" + utils.last-slide-number,
     )
   },
@@ -405,9 +405,9 @@
   show strong: set text(fill: theme-colors.accent)
   // 数式内の日本語が OS 既定のフォントにならないよう，数式フォントの後ろに本文フォントを足す．
   show math.equation: set text(font: ("New Computer Modern Math", "Shippori Antique"))
-  show raw: set text(font: "JuliaMono", size: 1em)
+  show raw: set text(font: "Juisee", size: 1em)
   show raw.where(block: true): set text(size: 0.9em)
-  show link: set text(font: "JuliaMono", fill: theme-colors.accent)
+  show link: set text(font: "Juisee", fill: theme-colors.accent)
   show footnote.entry: set text(size: .75em, fill: theme-colors.secondary)
   set footnote.entry(separator: line(length: 30%, stroke: .5pt + theme-colors.secondary))
 
