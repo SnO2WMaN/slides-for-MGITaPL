@@ -2,6 +2,7 @@
 // touying 0.8.0 の university テーマ（Pol Dellaiera 作）を元に切り出したもの．
 
 #import "@preview/cades:0.3.1": qr-code
+#import "@preview/cetz:0.5.2": canvas, draw
 #import "@preview/ctheorems:2.0.0": *
 #import "@preview/curryst:0.6.0": prooftree, rule
 #import "@preview/diagraph:0.3.7": *
@@ -76,9 +77,9 @@
 // Lean のコード．
 
 // リンクのパスの先頭ディレクトリ（リポジトリ名）から宛先リポジトリを解決する．
+// ProvabilityLogic は廃止し，全て Foundation の固定コミットに統一している．
 #let REPO_SOURCES = (
-  "Foundation": "https://github.com/FormalizedFormalLogic/Foundation/blob/v1",
-  "ProvabilityLogic": "https://github.com/FormalizedFormalLogic/ProvabilityLogic/blob/v1",
+  "Foundation": "https://github.com/FormalizedFormalLogic/Foundation/blob/f3972f4204fc61e1b736ed843415894c83f35508",
 )
 // リンクは (リポジトリ名, リポジトリ内パス) のタプルで指定する．
 #let lean-link(index, l) = {
@@ -106,7 +107,7 @@
     inset: 0.7em,
     breakable: false,
     {
-      set text(size: size, font: "JuliaMono")
+      set text(size: size)
       raw(lang: "lean", block: true, syntaxes: "assets/Lean.sublime-syntax", code-text)
     },
   )
@@ -122,6 +123,13 @@
     )
   }
 }
+
+// 図を幅いっぱいに拡大・縮小する．
+#let fit-to-width(body) = layout(size => {
+  let natural = measure(body)
+  let ratio = size.width / natural.width
+  scale(x: ratio * 100%, y: ratio * 100%, origin: top + left, reflow: true, body)
+})
 
 /// 通常のスライド．
 #let slide(

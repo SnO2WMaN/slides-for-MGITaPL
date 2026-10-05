@@ -1,4 +1,5 @@
 #import "template.typ": *
+#import "zoo.typ": zoo-arithmetic, zoo-provability-logic
 
 #let Pred = $serif("Pred")$
 #let Sent = $serif("Sent")$
@@ -139,13 +140,13 @@ Lean 4は型理論としてCalculus of Inductive ($CIC$) を採用している�
 最近のニュース: @Kum260726 はCollatz予想の反証をLean v4.32.1 で形式化した．
 
 #leancode[
-```lean
--- `n` はCollatzの操作を何度行っても1にならない．
-def Diverges (n : Nat) : Prop := 0 < n ∧ ∀ k, iterate step k n ≠ 1
+  ```lean
+  -- `n` はCollatzの操作を何度行っても1にならない．
+  def Diverges (n : Nat) : Prop := 0 < n ∧ ∀ k, iterate step k n ≠ 1
 
--- そのような `n` が存在する．
-theorem exists_nonterminating_orbit : ∃ n, Diverges n :
-```
+  -- そのような `n` が存在する．
+  theorem exists_nonterminating_orbit : ∃ n, Diverges n :
+  ```
 ]
 
 もちろん#footnote[この講演が行われた当時は少なくとも]このような上手い話があるわけがなく，これはLeanの*ソフトウェアとしての*実装のバグに由来するものであった（詳しい解説は @dM260801）．
@@ -191,11 +192,17 @@ theorem exists_nonterminating_orbit : ∃ n, Diverges n :
 
 いくつかの条件は改良できる(後述)．
 
-#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/First.lean"),))[
-```lean
-theorem incomplete (T : ArithmeticTheory) [T.Δ₁] [𝗥₀ ⪯ T] [T.SoundOnHierarchy 𝚺 1] : Incomplete T
-```
+#leancode(links: (
+  ("Foundation", "Foundation/FirstOrder/Incompleteness/First.lean"),
+  ("Foundation", "Foundation/FirstOrder/Incompleteness/Second.lean"),
+))[
+  ```lean
+  theorem incomplete (T : ArithmeticTheory) [T.Δ₁] [𝗥₀ ⪯ T] [T.SoundOnHierarchy 𝚺 1] : Incomplete T
+
+  theorem consistent_unprovable [Consistent T] : T ⊬ T.consistent.val
+  ```
 ]
+
 
 == 論理式
 
@@ -203,18 +210,18 @@ theorem incomplete (T : ArithmeticTheory) [T.Δ₁] [𝗥₀ ⪯ T] [T.SoundOnHi
 
 $ phi, psi ::= top | bot | R(arrow(v)) | not R(arrow(v)) | phi and psi | phi or psi | forall phi | exists phi $
 
-#leancode(links: (("Foundation", "Foundation/FirstOrder/Basic/Syntax/Formula.lean"),))[
-```lean
-  inductive Semiformula (L : Language) (ξ : Type*) : ℕ → Type _ where
-  |  verum : Semiformula L ξ n
-  | falsum : Semiformula L ξ n
-  |    rel : {arity : ℕ} → L.Rel arity → (Fin arity → Semiterm L ξ n) → Semiformula L ξ n
-  |   nrel : {arity : ℕ} → L.Rel arity → (Fin arity → Semiterm L ξ n) → Semiformula L ξ n
-  |    and : Semiformula L ξ n → Semiformula L ξ n → Semiformula L ξ n
-  |     or : Semiformula L ξ n → Semiformula L ξ n → Semiformula L ξ n
-  |    all : Semiformula L ξ (n + 1) → Semiformula L ξ n
-  |    exs : Semiformula L ξ (n + 1) → Semiformula L ξ n
-```
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Syntax/Classical/Formula.lean"),))[
+  ```lean
+    inductive Semiformula (L : Language) (ξ : Type*) : ℕ → Type _ where
+    |  verum : Semiformula L ξ n
+    | falsum : Semiformula L ξ n
+    |    rel : {arity : ℕ} → L.Rel arity → (Fin arity → Semiterm L ξ n) → Semiformula L ξ n
+    |   nrel : {arity : ℕ} → L.Rel arity → (Fin arity → Semiterm L ξ n) → Semiformula L ξ n
+    |    and : Semiformula L ξ n → Semiformula L ξ n → Semiformula L ξ n
+    |     or : Semiformula L ξ n → Semiformula L ξ n → Semiformula L ξ n
+    |    all : Semiformula L ξ (n + 1) → Semiformula L ξ n
+    |    exs : Semiformula L ξ (n + 1) → Semiformula L ξ n
+  ```
 ]
 
 - `Formula L ξ` を `Semiformula L ξ 0` の略記（束縛変数無し）
@@ -257,29 +264,29 @@ $ phi, psi ::= top | bot | R(arrow(v)) | not R(arrow(v)) | phi and psi | phi or 
 ]
 
 
-#leancode(links: (("Foundation", "Foundation/FirstOrder/Basic/Calculus.lean"),))[
-```lean
-inductive LK.Derivation : LK.Sequent L → Type _
-| identity (r : L.Rel k) (v) : LK.Derivation ⦃.rel r v, .nrel r v⦄
-| verum : LK.Derivation ⦃⊤⦄
-| weakening : LK.Derivation Γ → LK.Derivation (Γ + ⦃φ⦄)
-| contraction : LK.Derivation (Γ + ⦃φ, φ⦄) → LK.Derivation (Γ + ⦃φ⦄)
-| cut : LK.Derivation (Γ + ⦃φ⦄) → LK.Derivation (Δ + ⦃∼φ⦄) → LK.Derivation (Γ + Δ)
-| or : LK.Derivation (Γ + ⦃φ, ψ⦄) → LK.Derivation (Γ + ⦃φ ⋎ ψ⦄)
-| and : LK.Derivation (Γ + ⦃φ⦄) → LK.Derivation (Γ + ⦃ψ⦄) → LK.Derivation (Γ + ⦃φ ⋏ ψ⦄)
-| all : LK.Derivation (Γ⁺ + ⦃φ.free⦄) → LK.Derivation (Γ + ⦃∀¹ φ⦄)
-| exs : LK.Derivation (Γ + ⦃φ/[t]⦄) → LK.Derivation (Γ + ⦃∃¹ φ⦄)
-```
+#leancode(links: (("Foundation", "Foundation/FirstOrder/LK/Basic.lean"),), size: 0.7em)[
+  ```lean
+  inductive LK.Derivation : LK.Sequent L → Type _
+  | identity (r : L.Rel k) (v) : LK.Derivation ⦃.rel r v, .nrel r v⦄
+  | verum : LK.Derivation ⦃⊤⦄
+  | weakening : LK.Derivation Γ → LK.Derivation (Γ + ⦃φ⦄)
+  | contraction : LK.Derivation (Γ + ⦃φ, φ⦄) → LK.Derivation (Γ + ⦃φ⦄)
+  | cut : LK.Derivation (Γ + ⦃φ⦄) → LK.Derivation (Δ + ⦃∼φ⦄) → LK.Derivation (Γ + Δ)
+  | or : LK.Derivation (Γ + ⦃φ, ψ⦄) → LK.Derivation (Γ + ⦃φ ⋎ ψ⦄)
+  | and : LK.Derivation (Γ + ⦃φ⦄) → LK.Derivation (Γ + ⦃ψ⦄) → LK.Derivation (Γ + ⦃φ ⋏ ψ⦄)
+  | all : LK.Derivation (Γ⁺ + ⦃φ.free⦄) → LK.Derivation (Γ + ⦃∀¹ φ⦄)
+  | exs : LK.Derivation (Γ + ⦃φ/[t]⦄) → LK.Derivation (Γ + ⦃∃¹ φ⦄)
+  ```
 ]
 
 #pagebreak()
 
 カット無しの証明図へ変換する具体的な計算手続きを定める #footnote[証明図の帰納法による愚直な証明は機械化において煩雑で面倒なので，@Avi01 @Avi04 による直観主義述語論理への還元および強制法的な議論による．]ことで，#LK ではカット除去定理を機械化出来る #footnote[ただしこれが現実的にLeanで計算可能なのかはわからない．]．
 
-#leancode(links: (("Foundation", "Foundation/FirstOrder/Hauptsatz.lean"),))[
-```lean
-def hauptsatz {Γ : LK.Sequent L} : ⊢ᴸᴷ¹ Γ → {d : ⊢ᴸᴷ¹ Γ // LK.Derivation.IsCutFree d}
-```
+#leancode(links: (("Foundation", "Foundation/FirstOrder/LK/Hauptsatz.lean"),))[
+  ```lean
+  def hauptsatz {Γ : LK.Sequent L} : ⊢ᴸᴷ¹ Γ → {d : ⊢ᴸᴷ¹ Γ // LK.Derivation.IsCutFree d}
+  ```
 ]
 
 言語 $L$ の理論 $T$ を $L$-文の集合 `Set (Sentence L)` とする．
@@ -289,12 +296,12 @@ def hauptsatz {Γ : LK.Sequent L} : ⊢ᴸᴷ¹ Γ → {d : ⊢ᴸᴷ¹ Γ // LK
 
 カット除去定理からカノニカルモデルを作るなどの議論を行って，完全性定理を得る．
 
-#leancode(links: (("Foundation", "Foundation/FirstOrder/Completeness/CounterModel.lean"),))[
-```lean
-theorem small_satisfiable_of_consistent : Consistent T → Satisfiable T
+#leancode(links: (("Foundation", "Foundation/FirstOrder/LK/Completeness/CounterModel.lean"),))[
+  ```lean
+  theorem small_satisfiable_of_consistent : Consistent T → Satisfiable T
 
-theorem Proof.complete_iff : T ⊨ φ ↔ T ⊢ φ := ⟨fun h ↦ Proof.complete h, Proof.sound⟩
-```
+  theorem Proof.complete_iff : T ⊨ φ ↔ T ⊢ φ := ⟨fun h ↦ Proof.complete h, Proof.sound⟩
+  ```
 ]
 
 == 算術
@@ -327,7 +334,7 @@ $T proves phi$ であることを（特にLeanで機械化するには）実際�
 完全性定理を機械化することで以下の還元が使える．
 
 $
-  Lean proves \"T proves phi\" <==> Lean proves \"T models phi\"
+  Lean proves \"T proves phi\" <==> Lean proves \"forall V, V models T ==> V models phi\"
 $
 
 意味論的な議論においては，例えば $T$ が十分に豊かな算術であるなら $T models V$ を満たす $V$ が良い代数的な構造になる．
@@ -338,10 +345,10 @@ Mathlibなどが提供する代数的な構造に対しての様々な補題や�
 
 算術 $T$ の任意のモデル $V$ を固定する．
 
-#leancode(links: (("Foundation", "Foundation/FirstOrder/Arithmetic/IOpen/Basic.lean"),))[
-```lean
-  variable {V : Type*} [ORingStruc V] [V ⊧ₘ* T]
-```
+#leancode[
+  ```lean
+    variable {V : Type*} [ORingStruc V] [V ⊧ₘ* T]
+  ```
 ]
 
 - `ORingStruc V`: $V$ が言語 $cal(L)_"OR"$ の構造であることを主張するtypeclass.
@@ -349,15 +356,15 @@ Mathlibなどが提供する代数的な構造に対しての様々な補題や�
 
 $V$ 上で機械化を行う．関数は選択関数を用いて定義出来る．
 
-#leancode(links: (("Foundation", "Foundation/FirstOrder/Arithmetic/IOpen/Basic.lean"),))[
-```lean
-  lemma sqrt_exists_unique (a : V) : ∃! x, x * x ≤ a ∧ a < (x + 1) * (x + 1) := by ...
+#leancode[
+  ```lean
+    lemma sqrt_exists_unique (a : V) : ∃! x, x * x ≤ a ∧ a < (x + 1) * (x + 1)
 
-  def sqrt (a : V) : V := Classical.choose! (sqrt_exists_unique a)
-  prefix:75 "√" => sqrt
+    def sqrt (a : V) : V := Classical.choose! (sqrt_exists_unique a)
+    prefix:75 "√" => sqrt
 
-  lemma sqrt_mul_self (a : V) : √(a * a) = a := by ...
-```
+    lemma sqrt_mul_self (a : V) : √(a * a) = a
+  ```
 ]
 
 == メタ数学の算術化
@@ -386,6 +393,15 @@ $R0$ では表現定理が成り立つ #footnote[もちろんRobinson算術 や 
   $
 ]
 
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Arithmetic/R0/Representation.lean"),))[
+  ```lean
+  noncomputable def codeOfREPred (p : ℕ → Prop) : ArithmeticSemisentence 1
+
+  theorem rePred_weak_representation {p : ℕ → Prop} (hp : REPred p) {x : ℕ} :
+      p x ↔ T ⊢ (codeOfREPred p)/[x]
+  ```
+]
+
 == 第1不完全性定理
 
 表現定理および算術化を用いて，Gödelの第1不完全性定理(G1)をまず形式化出来る．
@@ -403,9 +419,9 @@ $R0$ では表現定理が成り立つ #footnote[もちろんRobinson算術 や 
 ]
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/First.lean"),))[
-```lean
-theorem incomplete (T : ArithmeticTheory) [T.Δ₁] [𝗥₀ ⪯ T] [T.SoundOnHierarchy 𝚺 1] : Incomplete T
-```
+  ```lean
+  theorem incomplete (T : ArithmeticTheory) [T.Δ₁] [𝗥₀ ⪯ T] [T.SoundOnHierarchy 𝚺 1] : Incomplete T
+  ```
 ]
 
 ここで `Incomplete T` は `∃ φ, T ⊬ φ ∧ T ⊬ ∼φ` の略記．
@@ -421,6 +437,22 @@ theorem incomplete (T : ArithmeticTheory) [T.Δ₁] [𝗥₀ ⪯ T] [T.SoundOnHi
   - $D3: T_0 proves Bew sigma → Bew(Bew sigma)$
 ]
 
+#leancode(
+  links: (("Foundation", "Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean"),),
+)[
+  ```lean
+  structure Provability (T₀ : Theory L₀) (T : Theory L) where
+    prov : Semisentence L₀ 1
+    bew_def {σ : Sentence L} : T ⊢ σ → T₀ ⊢ prov/[⌜σ⌝]
+
+  class HBL where
+    D2 {σ τ : Sentence L} : T₀ ⊢ 𝔅 (σ 🡒 τ) 🡒 𝔅 σ 🡒 𝔅 τ
+    D3 {σ : Sentence L} : T₀ ⊢ 𝔅 σ 🡒 𝔅 (𝔅 σ)
+  ```
+]
+
+#pagebreak()
+
 #definition[対角化可能性][
   *$T$ が対角化可能*とは，1変数述語 $theta$ を入力とし文 $upright("fixpoint")_theta$ を返す関数があって，それは以下を満たす．
   $
@@ -428,12 +460,38 @@ theorem incomplete (T : ArithmeticTheory) [T.Δ₁] [𝗥₀ ⪯ T] [T.SoundOnHi
   $
 ]
 
+#leancode(links: (
+  ("Foundation", "Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean"),
+  ("Foundation", "Foundation/FirstOrder/Arithmetic/Bootstrapping/FixedPoint.lean"),
+))[
+  ```lean
+  class Diagonalization [L.ReferenceableBy L] (T : Theory L) where
+    fixedpoint : Semisentence L 1 → Sentence L
+    diag (θ) : T ⊢ fixedpoint θ 🡘 θ/[⌜fixedpoint θ⌝]
+
+  theorem diagonal (θ : ArithmeticSemisentence 1) :
+      T ⊢ fixedpoint θ 🡘 θ/[⌜fixedpoint θ⌝]
+  ```
+]
+
 #pagebreak()
 
 #definition[
-  - $not Bew(dot.c)$ の不動点をGödel文 $upright("G")_Bew$ とする．
   - 無矛盾性を表す文 $not Bew bot$：「矛盾は証明できない」を $upright("Con")_Bew$ とする．
+  - $not Bew(dot.c)$ の不動点をGödel文 $upright("G")_Bew$ とする．
 ]
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean"),))[
+  ```lean
+  def con (𝔅 : Provability T₀ T) : Sentence L₀ := ∼𝔅 ⊥
+
+  def gödel (𝔅 : Provability T₀ T) : Sentence L := fixedpoint T₀ “x. ¬!𝔅.prov x”
+
+  lemma gödel_spec : T₀ ⊢ (gödel 𝔅) 🡘 ∼𝔅 (gödel 𝔅)
+  ```
+]
+
+#pagebreak()
 
 #lemma[Abstract G1, G2, Löb][
   $T$ が対角化可能で，$Bew$ はHBLを満たすとする．
@@ -443,6 +501,18 @@ theorem incomplete (T : ArithmeticTheory) [T.Δ₁] [𝗥₀ ⪯ T] [T.SoundOnHi
   / F-Löb: $T proves Bew (Bew sigma -> sigma) -> Bew sigma$
 ]
 
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean"),))[
+  ```lean
+  theorem unprovable_gödel : T ⊬ (gödel 𝔅)
+
+  theorem con_unprovable [Consistent T] : T ⊬ 𝔅.con
+
+  theorem löb_theorem (H : T ⊢ 𝔅 σ 🡒 σ) : T ⊢ σ
+
+  theorem formalized_löb_theorem : T₀ ⊢ 𝔅 (𝔅 σ 🡒 σ) 🡒 𝔅 σ
+  ```
+]
+
 == 第2不完全性定理
 
 算術化を頑張るとHBLを満たす証明可能性を実際に構成に構成することができる．
@@ -450,12 +520,30 @@ theorem incomplete (T : ArithmeticTheory) [T.Δ₁] [𝗥₀ ⪯ T] [T.SoundOnHi
 また，対角可能性も実際満たす．
 故に系として，第2不完全性定理やLöbの定理を機械化出来る．
 
+
 #theorem[Gödelの第2不完全性定理][
   $T$ が $ISigma1$ より強く無矛盾なら，$T$ の無矛盾性を表す文 $not box_T bot$ は証明できない．
 ]
 
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Second.lean"),))[
+  ```lean
+  theorem consistent_unprovable [Consistent T] : T ⊬ T.consistent.val
+  ```
+]
+
+#pagebreak()
+
 #theorem[Löbの定理][
   $T proves box_T sigma → sigma$ なら $T proves sigma$
+]
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Löb.lean"),))[
+  ```lean
+  theorem löb_theorem : T ⊢ provabilityPred T σ 🡒 σ → T ⊢ σ
+
+  theorem formalized_löb_theorem :
+      𝗜𝚺₁ ⊢ provabilityPred T (provabilityPred T σ 🡒 σ) 🡒 provabilityPred T σ
+  ```
 ]
 
 $T$ としてPeano算術 $PA$ を取ることが出来る．
@@ -478,23 +566,39 @@ $T$ としてPeano算術 $PA$ を取ることが出来る．
 
 == 算術理論の動物園
 
-全部strictだがそこまで出来てない．．．
+#align(center, zoo-arithmetic())
+
+全部strictだがそこまで出来てない．．．#footnote[
+  簡単な説明：
+  - $ISigma1^+$ は今回の緩い $Sigma_1$ 論理式に対しての帰納法原理を追加した体系．
+  - $upright("B"Sigma_1)$ は $Sigma_1$-論理式に対しての採集原理．
+  - $upright("L"Sigma_1)$ は $Sigma_1$-論理式に対しての最小値原理．
+]
 
 = 証明可能性論理
 
 == はじめに
 
-証明可能性論理の簡単な説明・モチベーション
+証明可能性論理の簡単な説明・モチベーション #footnote[証明可能性論理の標準的な文献として @Boo94 @Smo85 @AB05 @Ver24．]
 - 不完全性定理において中心的な役割を果たす証明可能性述語*「$phi$ は $T$ で証明できる」*を様相だと思おう．
 - 証明可能性 $Bew$ をより様相論理的に扱う．
 
 最重要の定理: *Solovayの算術的完全性定理．*
 
+
 #proposition(numbering: none)[Solovayの算術的完全性定理(ラフ)][
   HBLな $Bew$ の挙動は様相命題論理 $LogicGL$ で完全に特徴づけられる．
 ]
 
-証明可能性論理の標準的な文献として @Boo94 @Smo85 @AB05 @Ver24．
+#leancode(links: (("Foundation", "Foundation/ProvabilityLogic/GL/Arithmetic.lean"),))[
+  ```lean
+  theorem arithmetical_completeness_iff [T.SoundOnHierarchy 𝚺 1] :
+      𝐆𝐋 ⊢ A ↔ ∀ f : Realization α ℒₒᵣ, T ⊢ f T A
+
+  theorem eq_provabilityLogic [T.SoundOnHierarchy 𝚺 1] : 𝐆𝐋 = T.provabilityLogic (α := α)
+  ```
+]
+
 
 == 様相論理 $LogicGL$ の定義
 
@@ -502,7 +606,64 @@ $T$ としてPeano算術 $PA$ を取ることが出来る．
 
 論理式の集合を論理と呼ぶ．
 
-証明可能性 $Bew$ のHBLおよびF-Loebと比較すると公理 $Axiom("K")$ がD2，$Axiom("4")$ がD3，$Axiom("L")$ がF-Loebに対応している．
+#leancode(
+  links: (
+    ("Foundation", "Foundation/ProvabilityLogic/Formula.lean"),
+    ("Foundation", "Foundation/ProvabilityLogic/Logic.lean"),
+  ),
+)[
+  ```lean
+  inductive Formula (α : Type*) where
+    | atom   : α → Formula α
+    | falsum : Formula α
+    | imp    : Formula α → Formula α → Formula α
+    | box    : Formula α → Formula α
+    deriving DecidableEq
+
+  abbrev Logic (α : Type*) := Set (Formula α)
+  ```
+]
+
+#pagebreak()
+
+#let Nec = $Rule("Nec")$
+
+#definition[
+  論理 $LogicGL$ は古典命題論理に以下の公理と規則を足したもの．
+  - 規則 $Nec : proves A ==> proves box A$
+  - 公理 $AxiomK : box (A -> B) -> box A -> box B$
+  - 公理 $Axiom4 : box A -> box box A$
+  - 公理 $AxiomL : box (box A -> A) -> box A$
+]
+
+証明可能性 $Bew$ のHBLおよびF-Loebと以下で対応する．
+- 規則 $Nec$ が #D1
+- 公理 $AxiomK$ が #D2
+- 公理 $Axiom4$ が #D3
+- 公理 $AxiomL$ が F-Loeb
+
+#leancode(
+  links: (
+    ("Foundation", "Foundation/ProvabilityLogic/Logic.lean"),
+    ("Foundation", "Foundation/ProvabilityLogic/GL/Basic.lean"),
+  ),
+)[
+  ```lean
+  inductive Logic.normalOf (𝔸 : Set (Formula α)) : Logic α
+    | axm {A}        : A ∈ 𝔸 → normalOf 𝔸 A
+    | mdp {A B}      : normalOf 𝔸 (A 🡒 B) → normalOf 𝔸 A → normalOf 𝔸 B
+    | nec {A}        : normalOf 𝔸 A → normalOf 𝔸 (□A)
+    | verum          : normalOf 𝔸 Axioms.Verum
+    | implyK {A B}   : normalOf 𝔸 (Axioms.ImplyK A B)
+    | implyS {A B C} : normalOf 𝔸 (Axioms.ImplyS A B C)
+    | ...
+    | dne {A}        : normalOf 𝔸 (Axioms.DNE A)
+    | axiomK {A B}   : normalOf 𝔸 (□(A 🡒 B) 🡒 □A 🡒 □B)
+
+  abbrev Logic.GL {α : Type*} : Logic α :=
+    normalOf ({□A 🡒 □□A | A} ∪ {□(□A 🡒 A) 🡒 □A | A})
+  ```
+]
 
 == Kripke意味論
 
@@ -519,12 +680,67 @@ Leanでは，型 `κ` 上の構造として定義する．#footnote[universeを�
 
 #pagebreak()
 
+Leanでは次のように定義する．
+
+#leancode(links: (("Foundation", "Foundation/ProvabilityLogic/Kripke/Basic.lean"),))[
+  ```lean
+  structure Model (κ : Type*) [Nonempty κ] (α : Type*) where
+    Rel' : κ → κ → Prop
+    Val' : κ → α → Prop
+
+  abbrev World (_ : Model κ α) := κ
+
+  abbrev Rel {M : Model κ α} : M.World → M.World → Prop := M.Rel'
+  scoped infix:60 " ≺ " => Rel
+
+  abbrev Val {M : Model κ α} : M.World → α → Prop := M.Val'
+
+  def Forces (M : Model κ α) (x : M.World) : Formula α → Prop
+    | #a    => M x a
+    | ⊥     => False
+    | A 🡒 B => Forces M x A → Forces M x B
+    | □A    => ∀ y, x ≺ y → Forces M y A
+
+  scoped notation:55 x:56 " ⊩[" M "] " A:56 => Forces M x A
+  ```
+]
+
+#pagebreak()
+
 #definition[
   - *$LogicGL$-モデル*とは $prec$ が推移的で逆整礎的：$x_1 prec x_2 prec dots prec x_n$ が有限の $n$ 回遷移しか出来ないとする．
     - 故に $LogicGL$-モデルには点 $x$ から最大何回遷移できるか：*ランク $rank(x)$* が定まる #footnote[技術的な面倒のため，Leanでの実装では有限モデルのみに対して定めている．]．
   - *有限 $LogicGL$-モデル*とは $W$ が有限で $prec$ が推移的で非反射的なモデルとする．
   - モデルが*根付き*とは根 $r_M$ があって任意の $x in M setminus {r_M}$ に対し $r_M prec x$．
     - 根付きモデルの高さとは $rank(r_M)$ とする．
+]
+
+#pagebreak()
+
+Leanでは次のように定義する．
+
+#leancode(
+  links: (
+    ("Foundation", "Foundation/ProvabilityLogic/Kripke/Basic.lean"),
+    ("Foundation", "Foundation/ProvabilityLogic/Kripke/RootedModel.lean"),
+    ("Foundation", "Foundation/ProvabilityLogic/Kripke/Rank.lean"),
+  ),
+)[
+  ```lean
+  class IsGL (M : Model κ α) extends IsTrans _ M.Rel, IsConverseWellFounded _ M.Rel
+
+  class IsFiniteGL (M : Model κ α) extends IsTrans _ M.Rel, Std.Irrefl M.Rel where
+    [finite : Finite M.World]
+
+  noncomputable def World.rank (x : M.World) : ℕ := cwfHeight (· ≺ ·) x
+
+  structure RootedModel (κ : Type*) [Nonempty κ] (α : Type*) extends Model κ α where
+    root : toModel.World
+    root_rel : ∀ x, x ≠ root → root ≺ x
+
+  noncomputable def RootedModel.height (M : RootedModel κ α) [Fintype M.World] [M.IsGL] : ℕ :=
+    Model.World.rank (M := M.toModel) M.root
+  ```
 ]
 
 
@@ -579,9 +795,57 @@ Kripke意味論の完全性はこちらのほうがはるかに簡単に証明�
 
 #pagebreak()
 
+#leancode(
+  links: (
+    ("Foundation", "Foundation/ProvabilityLogic/Sequent.lean"),
+    ("Foundation", "Foundation/ProvabilityLogic/GL/Gentzen/Basic.lean"),
+  ),
+)[
+  ```lean
+  structure Sequent (α : Type*) where
+    ant : FormulaFinset α
+    suc : FormulaFinset α
+
+  infix:50 " ⟹ " => Sequent.mk
+
+  inductive Gentzen : Sequent α → Prop
+    | axm (A) : Gentzen ({A} ⟹ {A})
+    | botL : Gentzen ({⊥} ⟹ ∅)
+    | wkL {Γ Γ' Δ} : Gentzen (Γ ⟹ Δ) → (_ : Γ ⊆ Γ' := by grind) → Gentzen (Γ' ⟹ Δ)
+    | wkR {Γ Δ Δ'} : Gentzen (Γ ⟹ Δ) → (_ : Δ ⊆ Δ' := by grind) → Gentzen (Γ ⟹ Δ')
+    | impL {Γ Δ A B} :
+      Gentzen (Γ ⟹ insert A Δ) → Gentzen (insert B Γ ⟹ Δ) → Gentzen (insert (A 🡒 B) Γ ⟹ Δ)
+    | impR {Γ Δ A B} : Gentzen (insert A Γ ⟹ insert B Δ) → Gentzen (Γ ⟹ insert (A 🡒 B) Δ)
+    | boxGL {Γ A} : Gentzen (insert (□A) (Γ ∪ Γ.box) ⟹ {A}) → Gentzen (Γ.box ⟹ {□A})
+
+  notation:45 "⊢ᴳ[𝐆𝐋] " S:50 => Gentzen S
+  ```
+]
+
+#pagebreak()
+
 #theorem[#GentzenGL の完全性定理][
   $GentzenGL proves Gamma => Delta$ と任意の有限 $LogicGL$-モデル $M$ で $M models and.big Gamma -> or.big Delta$ であることは同値．
 ]
+
+#leancode(
+  links: (
+    ("Foundation", "Foundation/ProvabilityLogic/GL/Gentzen/Kripke.lean"),
+    ("Foundation", "Foundation/ProvabilityLogic/Kripke/Basic.lean"),
+  ),
+)[
+  ```lean
+  def Model.World.ForcesSequent (M : Model κ α) (x : M.World) (S : Sequent α) : Prop :=
+    (∀ C ∈ S.ant, x ⊩ C) → ∃ D ∈ S.suc, x ⊩ D
+
+  def Model.ValidateSequent (M : Model κ α) (S : Sequent α) : Prop := ∀ x : M.World, x ⊩ S
+
+  lemma GL.Gentzen.iff_valid : ⊢ᴳ[𝐆𝐋] S ↔
+      ∀ {κ : Type u} [Nonempty κ] (M : Kripke.Model κ α), [M.IsFiniteGL] → M ⊧ S
+  ```
+]
+
+#pagebreak()
 
 完全性定理から意味論的カット除去定理（カット許容）であることがすぐに従う．
 
@@ -597,6 +861,13 @@ Kripke意味論の完全性はこちらのほうがはるかに簡単に証明�
   ]
 ]
 
+#leancode(links: (("Foundation", "Foundation/ProvabilityLogic/GL/Gentzen/Kripke.lean"),))[
+  ```lean
+  theorem GL.Gentzen.cut (h₁ : ⊢ᴳ[𝐆𝐋] Γ₁ ⟹ insert A Δ₁) (h₂ : ⊢ᴳ[𝐆𝐋] insert A Γ₂ ⟹ Δ₂) :
+      ⊢ᴳ[𝐆𝐋] Γ₁ ∪ Γ₂ ⟹ Δ₁ ∪ Δ₂
+  ```
+]
+
 #pagebreak()
 
 あとは頑張ればHilbert流と対応することがわかる．故に次の同値が言える．
@@ -605,8 +876,22 @@ Kripke意味論の完全性はこちらのほうがはるかに簡単に証明�
   以下同値．$A$ は論理式．
   1. $LogicGL proves A$
   2. $cal(G)_LogicGL proves => A$
-  3. 任意の $LogicGL$-モデルで $A$ は妥当．
-  4. 任意の有限 $LogicGL$-木モデルの根で $A$ は充足される．
+  3. 任意の有限 $LogicGL$-モデルで $A$ は妥当．
+  4. 任意の有限 $LogicGL$-モデルの根で $A$ は充足される．
+  5. 任意の有限 $LogicGL$-木モデルの根で $A$ は充足される．
+]
+
+#leancode(links: (("Foundation", "Foundation/ProvabilityLogic/GL/Basic.lean"),))[
+  ```lean
+  theorem Logic.GL.provability_TFAE : [
+      𝐆𝐋 ⊢ A,
+      ⊢ᴳ[𝐆𝐋] ∅ ⟹ {A},
+      ∀ {κ : Type u} [Nonempty κ] (M : Model κ α), [M.IsFiniteGL] → M ⊧ A,
+      ∀ {κ : Type u} [Nonempty κ] (M : RootedModel κ α), [M.IsFiniteGL] → M.root ⊩ A,
+      ∀ {κ : Type u} [Nonempty κ] (M : RootedModel κ α), [M.IsFiniteGL] → [M.IsTree] →
+        M.root ⊩ A
+    ].TFAE
+  ```
 ]
 
 == 様相論理 $LogicGL$ のシークエント計算の余談: 構文論的カット除去
@@ -634,9 +919,56 @@ Kripke意味論の完全性はこちらのほうがはるかに簡単に証明�
 == 様相論理 $LogicGL$ のシークエント計算の余談: 補間定理と不動点定理
 
 @SV82 ではさらにシークエント計算を使った応用として， $LogicGL$ のCraig補間定理と不動点補題を示している．
+$LogicGL$ の導出木を手作りすれば補間と不動点は構成的に計算できる(Maeharaの方法) #footnote[ただし殆どの場合そんなことはしなくて完全性から作るので意義はない．] #footnote[@Gig26 もLeanで補間性定理などを示しているが，意味論的な制約により特殊なケースのみになっている．シークエント計算から一般に構成出来るというのはそれなりに利点に思える．]．
 
-これはかなり構文論的アルゴリズムがあり，それに従って実装すれば良い．
-$LogicGL$ の導出木を手作りすれば補間と不動点は構成的に計算できる #footnote[ただし殆どの場合そんなことはしなくて完全性から作るので意義はない．] #footnote[@Gig26 もLeanで補間性定理などを示しているが，意味論的な制約により特殊なケースのみになっている．シークエント計算から一般に構成出来るというのはそれなりに利点に思える．]．
+#theorem[$LogicGL$ のCraig補間性][
+  $LogicGL proves A -> B$ ならば，論理式 $C$ で $LogicGL proves A -> C$ かつ $LogicGL proves C -> B$ であり，$C$ の命題変数がすべて $A$ と $B$ の両方に現れるものが存在する．
+]
+
+#leancode(
+  links: (
+    ("Foundation", "Foundation/ProvabilityLogic/GL/CIP.lean"),
+    ("Foundation", "Foundation/ProvabilityLogic/GL/Gentzen/Maehara.lean"),
+  ),
+)[
+  ```lean
+  theorem Logic.GL.CIP (h : 𝐆𝐋 ⊢ A 🡒 B) :
+      ∃ C, 𝐆𝐋 ⊢ A 🡒 C ∧ 𝐆𝐋 ⊢ C 🡒 B ∧ C.atoms ⊆ A.atoms ∩ B.atoms
+  ```
+]
+
+#pagebreak()
+
+重要な系として，$LogicGL$ の補間定理から不動点定理も従う．
+
+#definition[
+  命題変数 $p$ が論理式 $A$ で *modalized* であるとは，$A$ に現れる $p$ がすべて $box$ のスコープの中にあることをいう．
+]
+
+#leancode(links: (("Foundation", "Foundation/ProvabilityLogic/Formula.lean"),))[
+  ```lean
+  def ModalizedIn (p : α) : Formula α → Prop
+    | #a    => a ≠ p
+    | ⊥     => True
+    | A 🡒 B => A.ModalizedIn p ∧ B.ModalizedIn p
+    | □_    => True
+  ```
+]
+
+#theorem[$LogicGL$ の不動点定理 @SV82][
+  $p$ が $A$ で modalized ならば，$p$ を含まず $A$ の命題変数のみからなる論理式 $D$ で
+  $ LogicGL proves A[p := D] <-> D $
+  を満たすものが存在する．
+  さらに不動点は証明可能同値を除いて一意である：$LogicGL proves A[p := E] <-> E$ なる任意の論理式 $E$ について $LogicGL proves D <-> E$．
+]
+
+#leancode(links: (("Foundation", "Foundation/ProvabilityLogic/GL/Fixedpoint.lean"),))[
+  ```lean
+  theorem Logic.GL.fixpoint_theorem (hpq : p ≠ q) (hA : A.ModalizedIn p) (hq : q ∉ A.atoms) :
+      ∃ D, D.atoms ⊆ A.atoms.erase p ∧ 𝐆𝐋 ⊢ A⟦p ↦ D⟧ 🡘 D ∧
+        ∀ E, 𝐆𝐋 ⊢ A⟦p ↦ E⟧ 🡘 E → 𝐆𝐋 ⊢ D 🡘 E
+  ```
+]
 
 == 証明可能性論理
 
@@ -655,6 +987,26 @@ $LogicGL$ の $box$ と証明可能性 $Bew$ を結びつけよう．
 
 #pagebreak()
 
+#leancode(links: (("Foundation", "Foundation/ProvabilityLogic/Arithmetic/Interpret.lean"),))[
+  ```lean
+  structure Realization (α : Type*) (L : Language) where
+    val : α → Sentence L
+
+  def interpret (f : Realization α L) (𝔅 : Provability T₀ T) : Formula α → Sentence L
+    | #a    => f.val a
+    | ⊥     => ⊥
+    | A 🡒 B => A.interpret f 𝔅 🡒 B.interpret f 𝔅
+    | □A    => 𝔅 (A.interpret f 𝔅)
+
+  noncomputable abbrev standardInterpret (f : Realization α ℒₒᵣ)
+      (T : ArithmeticTheory) [T.Δ₁] : Formula α → Sentence ℒₒᵣ :=
+    interpret f T.standardProvability
+  ```
+]
+
+
+#pagebreak()
+
 #definition[
   算術 $T, U$ とする． *$U$ 上の $T$ の証明可能性論理 $PL(T, U)$* を
   $
@@ -663,14 +1015,36 @@ $LogicGL$ の $box$ と証明可能性 $Bew$ を結びつけよう．
   で定める．
 ]
 
+#leancode(links: (("Foundation", "Foundation/ProvabilityLogic/Arithmetic/Interpret.lean"),))[
+  ```lean
+  def ArithmeticTheory.provabilityLogicRelativeTo
+      (T U : ArithmeticTheory) [T.Δ₁] : Logic α :=
+    { A | ∀ f : Realization α ℒₒᵣ, U ⊢ f T A }
+
+  abbrev ArithmeticTheory.provabilityLogic (T : ArithmeticTheory) [T.Δ₁] :
+      Logic α :=
+    T.provabilityLogicRelativeTo T
+  ```
+]
+
 == 算術的完全性定理
 
 #theorem[Solovayの算術的完全性定理(@Sol76)][
   $PL(PA, PA) = LogicGL$．
 ]
 
+#leancode(links: (("Foundation", "Foundation/ProvabilityLogic/GL/Arithmetic.lean"),))[
+  ```lean
+  theorem arithmetical_completeness_iff [T.SoundOnHierarchy 𝚺 1] :
+      𝐆𝐋 ⊢ A ↔ ∀ f : Realization α ℒₒᵣ, T ⊢ f T A
+
+  theorem eq_provabilityLogic [T.SoundOnHierarchy 𝚺 1] : 𝐆𝐋 = T.provabilityLogic (α := α)
+  ```
+]
+
 #proof[
-  $<==$ はHBLとF-Löbより簡単にわかる．$==>$ が難しい．対偶をとり，反例 $LogicGL$-木モデルを算術の中に埋め込んで満たさない実現を構成する．
+  健全性 $<==$ はHBLとF-Löbより簡単にわかる．
+  完全性 $==>$ が難しい．対偶をとり，反例 $LogicGL$-木モデルを算術の中に埋め込んで満たさない実現を構成する．
 ]
 
 == 証明可能性論理の分類定理
@@ -678,7 +1052,7 @@ $LogicGL$ の $box$ と証明可能性 $Bew$ を結びつけよう．
 $PL(T, U)$ の $T, U$ を動かすとどうなるかは @Bek90 によって完全に分類されている．
 
 #definition[
-  以下の論理を定める．$LogicGL + X$ は $X$ とのunionのMPの閉包（非正規拡大）．
+  以下の論理を定める．$LogicGL + X$ は $X$ とのunionのMP/substの閉包（非正規拡大）．
   - $LogicGLAlpha(X) := LogicGL + { box^(n + 1) bot -> box^n bot : n in X}$．
   - $LogicGLBeta(X) := LogicGL + not and.big_(n in.not X) box^(n + 1) bot -> box^n bot$：ただし $X$ は補有限．
   - $LogicA := LogicGL + {not box^n bot : n in NN }$．
@@ -686,16 +1060,82 @@ $PL(T, U)$ の $T, U$ を動かすとどうなるかは @Bek90 によって完�
   - $LogicS := LogicGL + box A -> A$．
 ]
 
+#leancode(
+  links: (
+    ("Foundation", "Foundation/ProvabilityLogic/Logic.lean"),
+  ),
+)[
+  ```lean
+  abbrev Logic (α : Type*) := Set (Formula α)
+
+  inductive Logic.sumQuasiNormal (L₁ L₂ : Logic α) : Logic α
+    | mem₁ {A}    : A ∈ L₁ → sumQuasiNormal L₁ L₂ A
+    | mem₂ {A}    : A ∈ L₂ → sumQuasiNormal L₁ L₂ A
+    | mdp  {A B}  :
+        sumQuasiNormal L₁ L₂ (A 🡒 B) → sumQuasiNormal L₁ L₂ A → sumQuasiNormal L₁ L₂ B
+    | subst {A s} : sumQuasiNormal L₁ L₂ A → sumQuasiNormal L₁ L₂ (A⟦s⟧)
+
+  infix:50 " +ᴸ " => Logic.sumQuasiNormal
+
+  abbrev Logic.S {α : Type*} : Logic α := 𝐆𝐋 +ᴸ { □A 🡒 A | A }
+  notation "𝐒" => Logic.S
+  ```
+]
+
+#pagebreak()
+
 #definition[
   論理式 $A$ のトレース $ tr(A) := \{ n in NN : #text[$r_M nforces A$ となる 高さ $n$ の有限根付きモデル $M$ が存在] \} $
   論理 $L$ のトレース $tr(L) := union.big_(A in L) tr(A)$．
 ]
+
+#leancode(links: (("Foundation", "Foundation/ProvabilityLogic/Trace.lean"),))[
+  ```lean
+  def Formula.trace (A : Formula α) : Set ℕ :=
+    {n | ∃ (κ : Type u) (_ : Nonempty κ) (M : RootedModel κ α)
+            (_ : Fintype M.World) (_ : M.IsGL), M.height = n ∧ M.root ⊮ A}
+
+  def Logic.trace (L : Logic α) : Set ℕ := ⋃ A ∈ L, A.trace
+  ```
+]
+
+#pagebreak()
+
+#definition[
+  $T proves box_T^n bot$ となる最小の $n$ を *理論 $T$ の高さ $height(T)$* という．なければ $omega$．
+]
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Height.lean"),))[
+  ```lean
+  noncomputable def Provability.height (𝔅 : Provability T₀ T) : ENat := ENat.find (T ⊢ 𝔅^[·] ⊥)
+
+  lemma height_eq_top_iff : 𝔅.height = ⊤ ↔ ∀ n, T ⊬ 𝔅^[n] ⊥
+
+  noncomputable abbrev ArithmeticTheory.height (T : ArithmeticTheory) [T.Δ₁] : ℕ∞ :=
+    T.standardProvability.height
+  ```
+]
+
+#pagebreak()
 
 #theorem[@Bek90][
   $L := PL(T, U)$ について．
   1. $tr(L)$ が補無限なら $L = LogicGLAlpha(tr(L))$．
   2. $tr(L)$ が補有限かつ $LogicGL subset.eq.not S$ なら $L = LogicGLBeta(tr(L))$．
   3. $tr(L)$ が補有限かつ $LogicGL subset.eq S$ なら $L$ は $LogicGLAlpha(tr(L)), D union LogicGLBeta(tr(L)), LogicS union LogicGLBeta(tr(L))$ のいずれか．
+]
+
+#leancode(links: (("Foundation", "Foundation/ProvabilityLogic/Classification/General.lean"),))[
+  ```lean
+  theorem provabilityLogic_eq_A_or_eq_D_or_eq_S :
+      letI L := T.provabilityLogicRelativeTo U (α := α);
+      L.trace = .univ → L ⪯ 𝐒 → L = 𝐀 ∨ L = 𝐃 ∨ L = 𝐒
+
+  theorem provabilityLogic_classification :
+      letI L := T.provabilityLogicRelativeTo U (α := α);
+      L = 𝐆𝐋α L.trace ∨
+      ∃ hL : L.traceᶜ.Finite, L = 𝐆𝐋β _ hL ∨ L = 𝐃 ∩ 𝐆𝐋β _ hL ∨ L = 𝐒 ∩ 𝐆𝐋β _ hL
+  ```
 ]
 
 #pagebreak()
@@ -709,7 +1149,22 @@ $PL(T, U)$ の $T, U$ を動かすとどうなるかは @Bek90 によって完�
   のいずれか一つのみが成立する．
 ]
 
+#leancode(links: (("Foundation", "Foundation/ProvabilityLogic/Classification/Truth.lean"),))[
+  ```lean
+  theorem provabilityLogic_TA_classification : [
+      ℕ↓[ℒₒᵣ] ⊧* T ∧ T.provabilityLogicRelativeTo 𝗧𝗔 (α := α) = 𝐒,
+      T.SoundOnHierarchy 𝚺 1 ∧ ¬ℕ↓[ℒₒᵣ] ⊧* T ∧ T.provabilityLogicRelativeTo 𝗧𝗔 (α := α) = 𝐃,
+      ¬T.SoundOnHierarchy 𝚺 1 ∧ T.height = ⊤ ∧ T.provabilityLogicRelativeTo 𝗧𝗔 (α := α) = 𝐀,
+      ∃ n : ℕ, T.height = n ∧ T.provabilityLogicRelativeTo 𝗧𝗔 (α := α) = 𝐆𝐋β {n}ᶜ (by simp)
+    ].OAOO
+  ```
+]
+
 == 証明可能性論理動物園
+
+#align(center, zoo-provability-logic())
+
+原理的には，それぞれの中間には $2^omega$ 個の相異な証明可能性述語がある（はず）．
 
 = まとめと今後の展望と余談
 
