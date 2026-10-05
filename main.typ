@@ -75,6 +75,7 @@
 
 #let Arith(A) = $sans(#A)$
 #let PA = $Arith("PA")$
+#let PAMinus = $Arith("PA")^-$
 #let TA = $Arith("TA")$
 #let R0 = $Arith("R"_0)$
 #let ISigma1 = $upright(sans(I)) Sigma_1$
@@ -233,6 +234,20 @@ $ phi, psi ::= top | bot | R(arrow(v)) | not R(arrow(v)) | phi and psi | phi or 
 算術の言語 $LOR$ を定めて，Leanのマクロによる糖衣構文を用意する．
 例えばこんな感じで記述出来る．
 
+#align(center, table(
+  columns: 2,
+  align: (center + horizon, center + horizon),
+  stroke: none,
+  inset: (x: 1em, y: 0.5em),
+  table.header([*論理式*], [*Lean*]),
+  table.hline(stroke: .5pt),
+  $98 + 6748 = 6846$, `“98 + 6748 = 6846”`,
+  $forall x. thin forall y. thin a dot (x + y) = a dot x + a dot y$, `“a. ∀ x y, a * (x + y) = a * x + a * y”`,
+  $forall x. thin [x < num(n) <-> or.big_(i < n) x = num(i)]$, `“∀ x, x < ↑n ↔ ⋁ i < n, x = ↑i”`,
+))
+
+ここで `a.` は束縛変数（`ArithmeticSemisentence 1` の変数），`↑n` はメタの自然数 `n` の数項である．
+
 == 証明体系
 
 古典1階述語論理のTait流のシークエント計算体系 #LK を用意する．シークエントは多重集合として定義する．
@@ -307,6 +322,82 @@ $ phi, psi ::= top | bot | R(arrow(v)) | not R(arrow(v)) | phi and psi | phi or 
 == 算術
 
 以降，言語 #LOR (`ℒₒᵣ`) の理論を算術と呼ぶ．
+
+#definition[
+  $R0$ は $LOR$ の等号公理と，次の公理図式からなる理論である（$n, m in NN$）．
+  $
+    num(n) + num(m) = num(n + m), quad
+    num(n) dot num(m) = num(n dot m), quad
+    forall x. thin [x < num(n) <-> or.big_(i < n) x = num(i)]
+  $
+]
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Arithmetic/R0/Basic.lean"),))[
+  ```lean
+  inductive R0 : ArithmeticTheory
+    | equal        : ∀ φ ∈ 𝗘𝗤 ℒₒᵣ, R0 φ
+    | Ω₁ (n m : ℕ) : R0 “↑n + ↑m = ↑(n + m)”
+    | Ω₂ (n m : ℕ) : R0 “↑n * ↑m = ↑(n * m)”
+    | Ω₃ (n : ℕ)   : R0 “∀ x, x < ↑n ↔ ⋁ i < n, x = ↑i”
+
+  notation "𝗥₀" => R0
+  ```
+]
+
+#pagebreak()
+
+#definition[
+  $PAMinus$ は離散順序半環の基本的な性質を述べる全称文からなる有限公理系である．
+]
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Arithmetic/PeanoMinus/Basic.lean"),))[
+  ```lean
+  abbrev addZero       := “∀ x, x + 0 = x”
+  abbrev addAssoc      := “∀ x y z, (x + y) + z = x + (y + z)”
+  abbrev addComm       := “∀ x y, x + y = y + x”
+  abbrev addEqOfLt     := “∀ x y, x < y → ∃ z <⁺ y, x + z = y”
+  abbrev zeroLe        := “∀ x, 0 ≤ x”
+  abbrev zeroLtOne     := “0 < 1”
+  abbrev oneLeOfZeroLt := “∀ x, 0 < x → 1 ≤ x”
+  abbrev addLtAdd      := “∀ x y z, x < y → x + z < y + z”
+  abbrev mulZero       := “∀ x, x * 0 = 0”
+  abbrev mulOne        := “∀ x, x * 1 = x”
+  abbrev mulAssoc      := “∀ x y z, (x * y) * z = x * (y * z)”
+  abbrev mulComm       := “∀ x y, x * y = y * x”
+  abbrev mulLtMul      := “∀ x y z, x < y ∧ 0 < z → x * z < y * z”
+  abbrev distr         := “∀ x y z, x * (y + z) = x * y + x * z”
+  abbrev ltIrrefl      := “∀ x, x ≮ x”
+  abbrev ltTrans       := “∀ x y z, x < y ∧ y < z → x < z”
+  abbrev ltTri         := “∀ x y, x < y ∨ x = y ∨ x > y”
+  ```
+]
+
+#pagebreak()
+
+#definition[
+  1変数論理式 $phi(x)$ の帰納法 $phi(0) -> forall x. thin [phi(x) -> phi(x + 1)] -> forall x. thin phi(x)$ の全称閉包を $upright("Ind")(phi)$ と書く．
+  - $ISigma1 := PAMinus + { upright("Ind")(phi) : #text[$phi$ は冠頭標準形の $Sigma_1$-論理式] }$．
+  - $PA := PAMinus + { upright("Ind")(phi) : #text[$phi$ は任意の論理式] }$．
+]
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Arithmetic/Schemata.lean"),))[
+  ```lean
+  def succInd {ξ} (φ : Semiformula L ξ 1) : Formula L ξ :=
+    “!φ 0 → (∀ x, !φ x → !φ (x + 1)) → ∀ x, !φ x”
+  def InductionScheme (Γ : Semiformula L ℕ 1 → Prop) : Theory L :=
+    { ψ | ∃ φ : Semiformula L ℕ 1, Γ φ ∧ ψ = .univCl (succInd φ) }
+
+  abbrev InductionOnPrenexHierarchy (Γ : Polarity) (s : ℕ) : ArithmeticTheory :=
+    𝗣𝗔⁻ ∪ InductionScheme ℒₒᵣ (ℬ[<, ℒₒᵣ].PrenexHierarchy Γ s)
+  prefix:max "𝗜𝗡𝗗 " => InductionOnPrenexHierarchy
+
+  abbrev ISigma (s : ℕ) : ArithmeticTheory := 𝗜𝗡𝗗 𝚺 s
+  notation "𝗜𝚺₁" => ISigma 1
+
+  abbrev Peano : ArithmeticTheory := 𝗣𝗔⁻ ∪ InductionScheme ℒₒᵣ Set.univ
+  notation "𝗣𝗔" => Peano
+  ```
+]
 
 == 算術的階層について
 
