@@ -23,6 +23,7 @@
 #let nforces = $not(forces)$
 
 #let Bew = $op(frak("B"))$
+#let Wid = $op(frak("W"))$
 #let Con = $bold(upright("Con"))$
 
 // 証明可能性条件（Hilbert-Bernays-Löb）
@@ -106,22 +107,25 @@
 
 #title-slide()
 
+= はじめに
+
+この発表では定理証明支援系LeanでGödelの不完全性定理と証明可能性論理に関する事実を形式化したということを発表します．厳密に話すと時間がいくらあっても足りないので，余談を挟みつつラフに解説していきます（スライドも飛ばし飛ばしで使います）．
+
 #grid(
   columns: (1fr, auto),
   column-gutter: 12pt,
   inset: (x: 32pt),
   [
-    - スライド: #link("https://sno2wman.github.io/slides-for-MGITaPL-Lean4/main.pdf")
+    - 最新版のスライド: #link("https://sno2wman.github.io/slides-for-MGITaPL-Lean4/main.pdf")
     - プレプリント: #link("https://arxiv.org/abs/2609.13780")
+    - 実装: #link("https://github.com/FormalizedFormalLogic/Foundation")
   ],
   [
     #qr-code("https://sno2wman.github.io/slides-for-MGITaPL-Lean4/main.pdf", width: 180pt)
   ],
 )
 
-= はじめに
-
-この発表では定理証明支援系Lean
+*注意：*プレプリント出版時とリポジトリの構成が大きく異なっています（Foundationへ統合しています）
 
 #pagebreak()
 
@@ -585,8 +589,8 @@ $R0$ では表現定理が成り立つ #footnote[もちろんRobinson算術 や 
 #pagebreak()
 
 #lemma[Abstract G1, G2, Löb][
-  $T$ が対角化可能で，$Bew$ はHBLを満たすとする．
-  / G1: $T nproves upright("G")_Bew$
+  $T$ が無矛盾かつ対角化可能で，$Bew$ はHBLを満たすとする．
+  / G1: $T nproves upright("G")_Bew$．さらに $T proves Bew sigma ==> T proves sigma$ を満たすなら #footnote[この条件は $Sigma_1$-健全性を純粋に構文論的に仮定したものと見ることが出来る．]，$T nproves not upright("G")_Bew$．
   / G2: $T nproves upright("Con")_Bew$
   / Löb: $T proves Bew sigma -> sigma$ なら $T proves sigma$
   / F-Löb: $T proves Bew (Bew sigma -> sigma) -> Bew sigma$
@@ -594,12 +598,13 @@ $R0$ では表現定理が成り立つ #footnote[もちろんRobinson算術 や 
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean"),))[
   ```lean
+  class Kreisel [L.ReferenceableBy L] {T₀ T : Theory L} (𝔅 : Provability T₀ T) where
+    KR {σ : Sentence L} : T ⊢ 𝔅 σ → T ⊢ σ
+
   theorem unprovable_gödel : T ⊬ (gödel 𝔅)
-
+  theorem unrefutable_gödel [𝔅.Kreisel] : T ⊬ ∼(gödel 𝔅)
   theorem con_unprovable [Consistent T] : T ⊬ 𝔅.con
-
   theorem löb_theorem (H : T ⊢ 𝔅 σ 🡒 σ) : T ⊢ σ
-
   theorem formalized_löb_theorem : T₀ ⊢ 𝔅 (𝔅 σ 🡒 σ) 🡒 𝔅 σ
   ```
 ]
@@ -631,15 +636,99 @@ $R0$ では表現定理が成り立つ #footnote[もちろんRobinson算術 や 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Löb.lean"),))[
   ```lean
   theorem löb_theorem : T ⊢ provabilityPred T σ 🡒 σ → T ⊢ σ
-
-  theorem formalized_löb_theorem :
-      𝗜𝚺₁ ⊢ provabilityPred T (provabilityPred T σ 🡒 σ) 🡒 provabilityPred T σ
   ```
 ]
 
-$T$ としてPeano算術 $PA$ を取ることが出来る．
+$T$ としてPeano算術 $PA$ を取ることが出来る．故に $PA$ は不完全だし，その無矛盾性は $PA$ 自身で証明できない．
+
+#leancode(
+  links: (
+    ("Foundation", "Foundation/FirstOrder/Arithmetic/Schemata.lean"),
+    ("Foundation", "Foundation/FirstOrder/Incompleteness/Definability.lean"),
+    ("Foundation", "Foundation/FirstOrder/Incompleteness/Examples.lean"),
+  ),
+)[
+  ```lean
+  instance : 𝗣𝗔 ⪱ 𝗣𝗔 ∪ 𝗣𝗔.Con
+  instance : 𝗣𝗔 ⪱ 𝗣𝗔 ∪ 𝗣𝗔.Incon
+  ```
+]
 
 == 抽象化の利点
+
+#Bew としてこのような性質を考えよう
+
+#definition[
+  $bold("Ros")$: $T proves not sigma ==> T proves not Bew sigma$
+]
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean"),))[
+  ```lean
+  class Rosser [L.ReferenceableBy L₀] {T₀ : Theory L₀} {T : Theory L} (𝔅 : Provability T₀ T) where
+    Ros {σ : Sentence L} : T ⊢ ∼σ → T₀ ⊢ ∼𝔅 σ
+  ```
+]
+
+#pagebreak()
+
+#theorem[Abstract GR][
+  $T$ が無矛盾かつ対角化可能で $Bew$ が $bold("Ros")$ を満たすなら，
+  $T nproves upright("G")_Bew$ かつ，何も仮定することなく $T nproves not upright("G")_Bew$．
+]
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean"),))[
+  ```lean
+  local notation "𝐑" => gödel 𝔅
+
+  theorem unrefutable_rosser [𝔅.Rosser] : T ⊬ ∼𝐑
+  theorem rosser_independent [L.DecidableEq] [𝔅.Rosser] : Independent T 𝐑
+  theorem rosser_first_incompleteness [L.DecidableEq] (𝔅 : Provability T₀ T) [𝔅.Rosser] :
+      Incomplete T
+  ```
+]
+
+これはGödel-Rosserの第1不完全性定理の抽象的な主張となっている（$Sigma_1$-健全性を消去）
+
+#pagebreak()
+
+実際witness comparisonなどの道具を使って $bold("Ros")$ を満たす証明可能性述語を具体的に構成することが出来る．ゆえに
+
+#theorem[Gödel-Rosserの第一不完全性定理][
+  $T$ が $ISigma1$ を含み，$Delta_1$-定義可能で，*無矛盾なら，*$T$ から証明も反証も出来ない文が存在する．
+]
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/RosserProvability.lean"),))[
+  ```lean
+  theorem incomplete_GR (T : ArithmeticTheory) [T.Δ₁] [𝗜𝚺₁ ⪯ T] [Consistent T] : Incomplete T
+  ```
+]
+
+#pagebreak()
+
+不完全性定理において無矛盾性を表す文は「$bot$ が証明されない」以外にもある．
+- 例：*「任意の文は証明されかつ同時に反証されるということはない」*
+
+#theorem[Jeroslowの第2不完全性定理][
+  $T$ が無矛盾なら，$T nproves forall x. not (box_T x and box_T (dot(not) x))$
+]
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Jeroslow.lean"),))[
+  ```lean
+  theorem unprovable_formalized_law_of_noncontradiction [𝗜𝚺₁ ⪯ T] [Entailment.Consistent T]
+    : T ⊬ ∀¹ ∼(provable T ⋏ T.refutable)
+  ```
+]
+
+論理式 $phi$ のGödel数 $godelize(phi)$ を受け取って $not phi$ のGödel数 $godelize(not phi)$ を返す関数 $dot(not) x$ を考える必要があるが，抽象化ではそれは面倒．
+- 反証可能性 #Wid を考える．つまり，$T proves not sigma ==> T proves Wid sigma$ を考えれば良い．
+
+#leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Refutability.lean"),))[
+  ```lean
+  structure Refutability [L.ReferenceableBy L₀] (T₀ : Theory L₀) (T : Theory L) where
+    refu : Semisentence L₀ 1
+    refu_def {σ : Sentence L} : T ⊢ ∼σ → T₀ ⊢ refu/[⌜σ⌝]
+  ```
+]
 
 == 不完全性定理やその他いろんな系
 
@@ -1261,7 +1350,9 @@ $PL(T, U)$ の $T, U$ を動かすとどうなるかは @Bek90 によって完�
 
 == 山程の課題
 
-== 今後の目標
+== 今後の目標（直観主義算術とその証明可能性論理）
+
+== 今後の目標（公理的集合論）
 
 == 余談: ソフトウェア開発としての数学の機械化 <sect:perspesctive_software>
 
@@ -1330,6 +1421,14 @@ Kripkeモデルの幾何的な議論（*絵で書いたら自明じゃん*）を
 個人的には，来年(2027年)にはもうそれほど人力で形式証明を書かなくても良い時代が来るのかなとは思う．
 - *便利なキーボードとしてのAI/LLM．*
 - もちろん全体的な議論や実装の筋の良さ，みたいなものは人が評価するべきだとは思う．
+
+== まとめ
+
+この発表では定理証明支援系LeanでGödelの不完全性定理と証明可能性論理に関する事実を形式化したということを発表しました．
+
+*定理証明支援系は楽しいので皆さんも触ってみてください．*
+- 将来は人間のプレプリントを全部形式化して厳密に追試することが出来る，みたいな世界ができたらそれは素晴らしいことだと思います．
+- 人や資産が足りてないので，知的資源およびソフトウェア的な資源があったら本当に助かります．
 
 == 参考文献
 
