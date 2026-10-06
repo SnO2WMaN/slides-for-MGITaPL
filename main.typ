@@ -20,7 +20,7 @@
 #let models = $tack.rr$
 #let nmodels = $tack.rr.not$
 #let forces = $forces$
-#let nforces = $not(forces)$
+#let nforces = sym.forces.not
 
 #let Bew = $op(frak("B"))$
 #let Wid = $op(frak("W"))$
@@ -51,6 +51,9 @@
 // 様相論理・シークエント計算
 #let Logic(L) = $bold(upright(#L))$
 #let LogicGL = $Logic("GL")$
+#let LogiciK = $Logic("iK")$
+#let LogiciGL = $Logic("iGL")$
+#let LogiciSL = $Logic("iSL")$
 #let LogicD = Logic("D")
 #let LogicS = Logic("S")
 #let LogicA = Logic("A")
@@ -76,6 +79,7 @@
 
 #let Arith(A) = $sans(#A)$
 #let PA = $Arith("PA")$
+#let HA = $Arith("HA")$
 #let PAMinus = $Arith("PA")^-$
 #let TA = $Arith("TA")$
 #let R0 = $Arith("R"_0)$
@@ -131,18 +135,62 @@
 
 = 定理証明支援系
 
-== Leanについて
+== 定理証明支援系とは？
 
-Lean 4は型理論としてCalculus of Inductive ($CIC$) を採用している．
+*要約*
+
+数学の実践において，人は論理の運行を間違える．例: 仮定の不足，帰納法，etc.
+
+→ #text(size: 1.5em)[*機械に検証させればいいじゃん！*]
+
+
+定理証明支援系とは数学をプログラミングコード（形式言語）として記述し，その記述が論理的に破綻してないことを検証するソフトウェアである．
+
+例: Rocq, Isabelle, Agda, HOL/Light, *Lean*
+
+== Leanとは？
+
+2020年に新しく開発された定理証明支援系．
+
+Lean 4は型理論としてCalculus of Inductive ($CIC$) を採用しており，
 原理上は#footnote[
   Lean 3では @Car19 が $ZFC + #text[「$omega$-個の到達不能基数が存在する」]$ の無矛盾性をモデルを作って示している．
   この結果を素直にこの結果をLean 4に持ってくることは出来ない（らしい）が，最近ようやく #link("https://github.com/leanprover/con-leche") などで取り組まれているように思える．
   もちろん今ある数学が全然 $ZFC$ でやってるわけねーだろという方にとっては一切この話は関係ない．
 ]普通に行われている数学が全部展開出来るだろうとされている．
 
+特徴
+- 強力なメタプログラミング能力（マクロや新しいタクティクを作ることが出来る）．
+- 汎用的な数学的ライブラリMathlib（代数，解析学，圏論，etc. #footnote[学部レベルの数学は全部あるらしい．]）．
+- 実用的なプログラミング言語への志向．
+
+近年AI/LLMが寄越してきた証明の保証として用いられる風潮がある #footnote[なぜなのかはよくわからない．コンパイルの速度？]．
+
+== ロジックの形式化の先行研究
+
+Gödelの不完全性定理の形式化の先行研究として例えば以下がある．
+
+- @Sha86 によるBoyer--Moore定理証明器（Nqthm）
+  - G1の最初の形式化．
+- @OCo05 によるRocqでのG1の形式化．
+  - G1は $PA$ ではなくて $Arith("Z2")$ という算術体系上で, G2はいくつかの仮定．
+- @Pau14 によるG2の形式化
+  - 唯一のG2の形式化だが，遺伝的有限集合論で議論．
+
+*１つ目の新規性*：フルの算術で全部やった．
+
+#pagebreak()
+
+様相論理 $LogicGL$ の形式化として
+- @MPB23 でラベル付きシークエント計算のHOL/Lightでの形式化．
+
+*２つ目の新規性*：実際に $LogicGL$ の様相を算術に関連付けた形式化は誰もやっていない．
+
+#text(size: 1.5em)[*論理学の形式化は本当に殆どやられていない！*]
+
 == 余談: 定理証明支援系・Leanは信頼できるか？
 
-最近のニュース: @Kum260726 はCollatz予想の反証をLean v4.32.1 で形式化した．
+最近のニュース: Ramana Kumar #footnote[#link("https://github.com/xrchz/CollatzLean")] はCollatz予想の反証をLean v4.32.1 で形式化した．
 
 #leancode[
   ```lean
@@ -154,7 +202,7 @@ Lean 4は型理論としてCalculus of Inductive ($CIC$) を採用している�
   ```
 ]
 
-もちろん#footnote[この講演が行われた当時は少なくとも]このような上手い話があるわけがなく，これはLeanの*ソフトウェアとしての*実装のバグに由来するものであった（詳しい解説は @dM260801）．
+もちろん#footnote[この講演が行われた当時は少なくとも]このような上手い話があるわけがなく，これはLeanの*ソフトウェアとしての*実装のバグに由来するものであった（詳しい解説は @dM260801，v4.33.0で修正）．
 
 甚大な量のLeanによる形式証明のソースコードの中にこのような秘孔が混じっている可能性はある．
 これに関しては @sect:perspesctive_software でも論ずる．
@@ -243,7 +291,7 @@ $ phi, psi ::= top | bot | R(arrow(v)) | not R(arrow(v)) | phi and psi | phi or 
   align: (center + horizon, center + horizon),
   stroke: none,
   inset: (x: 1em, y: 0.5em),
-  table.header([*論理式*], [*Lean*]),
+  table.header([論理式], [Lean]),
   table.hline(stroke: .5pt),
   $98 + 6748 = 6846$, `“98 + 6748 = 6846”`,
   $forall x. thin forall y. thin a dot (x + y) = a dot x + a dot y$, `“a. ∀ x y, a * (x + y) = a * x + a * y”`,
@@ -351,7 +399,7 @@ $ phi, psi ::= top | bot | R(arrow(v)) | not R(arrow(v)) | phi and psi | phi or 
 #pagebreak()
 
 #definition[
-  $PAMinus$ は離散順序半環の基本的な性質を述べる全称文からなる有限公理系である．
+  $PAMinus$ は離散順序半環の基本的な性質を述べる有限個の $Pi_1$ 文からなる理論である．
 ]
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Arithmetic/PeanoMinus/Basic.lean"),))[
@@ -403,7 +451,7 @@ $ phi, psi ::= top | bot | R(arrow(v)) | not R(arrow(v)) | phi and psi | phi or 
   ```
 ]
 
-== 算術的階層について
+== 余談: 算術的階層について
 
 *ここについての扱いは現在改修中．*
 
@@ -860,8 +908,6 @@ Leanでは，型 `κ` 上の構造として定義する．#footnote[universeを�
 
 #pagebreak()
 
-Leanでは次のように定義する．
-
 #leancode(links: (("Foundation", "Foundation/ProvabilityLogic/Kripke/Basic.lean"),))[
   ```lean
   structure Model (κ : Type*) [Nonempty κ] (α : Type*) where
@@ -1246,8 +1292,6 @@ $PL(T, U)$ の $T, U$ を動かすとどうなるかは @Bek90 によって完�
   ),
 )[
   ```lean
-  abbrev Logic (α : Type*) := Set (Formula α)
-
   inductive Logic.sumQuasiNormal (L₁ L₂ : Logic α) : Logic α
     | mem₁ {A}    : A ∈ L₁ → sumQuasiNormal L₁ L₂ A
     | mem₂ {A}    : A ∈ L₂ → sumQuasiNormal L₁ L₂ A
@@ -1265,8 +1309,8 @@ $PL(T, U)$ の $T, U$ を動かすとどうなるかは @Bek90 によって完�
 #pagebreak()
 
 #definition[
-  論理式 $A$ のトレース $ tr(A) := \{ n in NN : #text[$r_M nforces A$ となる 高さ $n$ の有限根付きモデル $M$ が存在] \} $
-  論理 $L$ のトレース $tr(L) := union.big_(A in L) tr(A)$．
+  *論理式 $A$ のトレース* $ tr(A) := \{ n in NN : #text[$r_M nforces A$ となる 高さ $n$ の有限根付きモデル $M$ が存在] \} $
+  *論理 $L$ のトレース* $tr(L) := union.big_(A in L) tr(A)$．
 ]
 
 #leancode(links: (("Foundation", "Foundation/ProvabilityLogic/Trace.lean"),))[
@@ -1350,9 +1394,99 @@ $PL(T, U)$ の $T, U$ を動かすとどうなるかは @Bek90 によって完�
 
 == 山程の課題
 
+*まだまだ山程の課題がある！*
+
+- 算術的階層をどう扱う？
+- 理論の解釈(interpretation)の実装
+- 部分真理定義述語とそれを用いた議論
+- もっと弱い算術
+- $PA$ などの独立命題 (Paris-Harringtonの定理など)
+- 直観主義(述語論理・算術・様相論理)
+- 集合論
+
+などなど．．．
+
 == 今後の目標（直観主義算術とその証明可能性論理）
 
+Heyting算術 $HA$（直観主義論理上の $PA$）の証明可能性論理は50年ぐらいの問題 #footnote[@AB05 @BV06]．
+- 最近の進展として @Moj26 が完全な公理化を発表したが，数年間は査読中 #footnote[v1は2022年出版]．
+- *これを機械化して厳密に検証したい．*
+
+直観主義様相論理：
+- $LogiciGL$：直観主義命題論理 $+ AxiomK + upright("(Nec)") + box(box A -> A) -> box A$．$HA$ に対して算術的に健全（@Lit14 @vdGI21）．
+- $LogiciSL$：$LogiciK + (box A -> A) -> A$（@VL24）．
+
+Rocqでの先行研究
+- $LogiciGL$ のカット除去 @GS22 @Shi22
+- $LogiciSL$ のカット除去 @SvdGGI23，一様補間定理 @FvdGvGS24．
+
+#pagebreak()
+
+Heyting算術をまずどう形式化するか？
+- $HA$ の証明をどうやって書く？
+- 完全性経由で一旦モデルに持ってくるみたいな議論は出来なさそう．
+
+解決案の候補：Leanの中で $HA$ のメタ定理証明支援系を作って形式証明を書く？
+
+#leancode[
+  ```lean
+  example : HA proves "∀ x, ∀ y, 0 < x + y + 1" := work_in
+    HA_intro;
+    ...
+  ```
+]
+
 == 今後の目標（公理的集合論）
+
+公理的集合論の形式化はたまにやられている．
+
+- Lean3でCHの独立性 (*flyspeckプロジェクト*: @HvD20)．
+  - ただしBoole値モデルによるもので，強制法より適用範囲が狭いという問題点がある．
+- Isabelle/ZFでは，強制法によるAC，¬ACやCHの独立性が形式化されている cf: @Pau03 @GPST20 @GPSTS22 @Fun24．
+
+ただしこれ以上の進展はあまりない（様に見える）．
+
+#pagebreak()
+
+強制法の一般的な枠組みを機械化して，連続体仮説の独立性などを示したい．
+- 方針1：可算推移的モデル $M$ と generic filter $G$ から $M[G]$ を作る標準的な方法 (cf: @Kun11)．
+- 方針2：証明論的強制法 (cf: @Avi04)：理論間の強制解釈と保存性を示す．$ZFC$ の無矛盾性だけから独立性が従い，証明の変換も有限的．
+  - 一階述語論理の完全性定理の機械化では既に簡略化された強制法を使っている．
+
+その他の問題：半順序などに関する $Lean proves phi$ の議論をどう $Lean proves \"ZFC proves phi\"$ へどうやって持っていく？
+#footnote[Leanの型理論から考えるとこれを素朴に変換する仕組みが作れるとは思えない．フルスクラッチで書き直す必要もある？]
+
+#pagebreak()
+
+考えたいこと？
+
+- もっと集合論の独立命題．
+- 巨大基数の比較：#link("https://neugierde.github.io/cantors-attic/")．
+- 強制法の様相論理：強制法の原理は様相論理 $Logic("S4.2")$ の拡張体系でおよそ記述出来る．
+
+== 余談: ライブラリとして
+
+現状，Formalized Formal Logicの今回の形式化はMathlibへ移植する気はほとんどない．
+
+理念的な問題
+- Mahtlibのレビューは遅く，また論理学の適切なレビュアーが今いない
+- Mathlibの肥大化：ライブラリが8GBもあるのどうなの？
+
+*現実的な問題*
+- 論理学は定義の段階でどのような言語や定式化を選択するかに強く依存する．そのようなものを汎用的なライブラリとして提供する方法がない（あるいは意義が薄い）．
+
+今後はあくまでもFFLのフレームワークで論理学をやる方面になるだろう（デファクト・スタンダードになればいいな）
+
+#pagebreak()
+
+*Formal Conjectures* #footnote[#link("https://github.com/google-deepmind/formal-conjectures")] というLeanによる未解決問題のカタログがある．これのFFL版を作ろう．
+
+
+例えば算術には以下の問題がある
+1. $upright("I")Delta_0$ は有限公理化可能か？
+2. $upright("I")Delta_0$ で素数が無限であることは証明可能か？
+
+このような問題をカタログ化しておけば誰か（何か）が取り組んでくれるかも？#footnote[それが果たしてどうなんだ？という問題はありますが．]
 
 == 余談: ソフトウェア開発としての数学の機械化 <sect:perspesctive_software>
 
@@ -1367,6 +1501,10 @@ $PL(T, U)$ の $T, U$ を動かすとどうなるかは @Bek90 によって完�
 #pagebreak()
 
 OpenAI, Navier-Stokes方程式に関する形式化のコミットの例．
+
+#align(center, image("assets/openai_NS_diff.png", height: 70%))
+
+（AnthoropicのFLTの定理の形式化はまずGitHubのプレビューが追いついていなかった）
 
 #pagebreak()
 
@@ -1428,7 +1566,7 @@ Kripkeモデルの幾何的な議論（*絵で書いたら自明じゃん*）を
 
 *定理証明支援系は楽しいので皆さんも触ってみてください．*
 - 将来は人間のプレプリントを全部形式化して厳密に追試することが出来る，みたいな世界ができたらそれは素晴らしいことだと思います．
-- 人や資産が足りてないので，知的資源およびソフトウェア的な資源があったら本当に助かります．
+- ロジックの形式化をしている人や資産が*本当に*足りてないので，知的資源およびソフトウェア的な資源があったら本当に助かります．
 
 == 参考文献
 

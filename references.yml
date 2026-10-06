@@ -245,7 +245,7 @@ Rui91:
     volume: 1
 
 Sai24:
-  type: article
+  type: misc
   title: Leanを用いたGödelの第一・第二不完全性定理の形式化
   url: https://iehality.github.io/ffl-slides/main.pdf
   author: 齋藤, 彰悟
@@ -850,3 +850,389 @@ Gig26:
   date: 2026-05
   organization: Universiteit van Amsterdam
   genre: Master's thesis
+
+AM18:
+  type: article
+  title: The Σ₁-Provability Logic of HA
+  author:
+    - Ardeshir, Mohammad
+    - Mojtahedi, Mojtaba
+  date: 2018
+  page-range: 997-1043
+  serial-number:
+    doi: 10.1016/j.apal.2018.05.001
+  parent:
+    type: periodical
+    title: Annals of Pure and Applied Logic
+    volume: 169
+
+AM19:
+  type: article
+  title: The Σ₁-Provability Logic of HA*
+  author:
+    - Ardeshir, Mohammad
+    - Mojtahedi, Mojtaba
+  date: 2019
+  page-range: 1118-1135
+  serial-number:
+    doi: 10.1017/jsl.2019.44
+  parent:
+    type: periodical
+    title: The Journal of Symbolic Logic
+    volume: 84
+
+Moj24:
+  type: chapter
+  title: The Σ₁-Provability Logic of HA Revisited
+  author: Mojtahedi, Mojtaba
+  date: 2024
+  page-range: 89-110
+  serial-number:
+    doi: 10.1007/978-3-031-47921-2_4
+  parent:
+    type: anthology
+    title: Dick de Jongh on Intuitionistic and Provability Logics
+    editor:
+      - Bezhanishvili, Nick
+      - Iemhoff, Rosalie
+      - Yang, Fan
+    publisher:
+      name: Springer International Publishing
+      location: Cham
+
+Moj26:
+  type: article
+  title: On the Provability Logic of HA
+  author: Mojtahedi, Mojtaba
+  date: 2026
+  serial-number:
+    doi: 10.48550/arXiv.2206.00445
+    arxiv: "2206.00445"
+
+SM23a:
+  type: thesis
+  title: On the Provability Logic of Constructive Arithmetic
+  author: Sierra Miranda, Borja
+  date: 2023
+  organization: Universiteit van Amsterdam
+  genre: Master's thesis
+
+BV06:
+  type: chapter
+  title: Problems in the Logic of Provability
+  author:
+    - Beklemishev, Lev D.
+    - Visser, Albert
+  date: 2006
+  page-range: 77-136
+  serial-number:
+    doi: 10.1007/0-387-31072-X_2
+  parent:
+    type: anthology
+    title: Mathematical Problems from Applied Logic I
+    editor:
+      - Gabbay, Dov M.
+      - Goncharov, Sergei S.
+      - Zakharyaschev, Michael
+    publisher:
+      name: Springer
+      location: New York
+
+vdGI21:
+  type: article
+  title: Sequent Calculi for Intuitionistic Gödel–Löb Logic
+  author:
+    - name: van der Giessen
+      given-name: Iris
+    - Iemhoff, Rosalie
+  date: 2021
+  page-range: 221-246
+  serial-number:
+    doi: 10.1215/00294527-2021-0011
+  parent:
+    type: periodical
+    title: Notre Dame Journal of Formal Logic
+    volume: 62
+
+Lit14:
+  type: chapter
+  title: Constructive Modalities with Provability Smack
+  author: Litak, Tadeusz
+  date: 2014
+  page-range: 187-216
+  serial-number:
+    doi: 10.1007/978-94-017-8860-1_8
+  parent:
+    type: anthology
+    title: Leo Esakia on Duality in Modal and Intuitionistic Logics
+    editor: Bezhanishvili, Guram
+    publisher:
+      name: Springer Netherlands
+      location: Dordrecht
+
+Urs79:
+  type: article
+  title: A Modal Calculus Analogous to K4W, Based on Intuitionistic Propositional Logic, I°
+  author: Ursini, Aldo
+  date: 1979
+  page-range: 297-311
+  serial-number:
+    doi: 10.1007/BF00405387
+  parent:
+    type: periodical
+    title: Studia Logica
+    volume: 38
+
+GS22:
+  type: chapter
+  title: "Direct Elimination of Additive-Cuts in GL4ip: Verified and Extracted"
+  author:
+    - Goré, Rajeev
+    - Shillito, Ian
+  date: 2022
+  page-range: 429-450
+  url: http://www.aiml.net/volumes/volume14/26-Gore-Shillito.pdf
+  parent:
+    type: anthology
+    title: Advances in Modal Logic
+    editor:
+      - Fernández-Duque, David
+      - Palmigiano, Alessandra
+      - Pinchinat, Sophie
+    publisher:
+      name: College Publications
+      location: London
+
+Shi22:
+  type: thesis
+  title: New Foundations for the Proof Theory of Bi-Intuitionistic and Provability Logics Mechanized in Coq
+  author: Shillito, Ian
+  date: 2022
+  organization: Australian National University
+  genre: Ph.D. thesis
+  url: https://openresearch-repository.anu.edu.au/items/825a3f8c-6b8a-4cff-8c52-77e657723374
+
+SvdGGI23:
+  type: chapter
+  title: "A New Calculus for Intuitionistic Strong Löb Logic: Strong Termination and Cut-Elimination, Formalised"
+  author:
+    - Shillito, Ian
+    - name: van der Giessen
+      given-name: Iris
+    - Goré, Rajeev
+    - Iemhoff, Rosalie
+  date: 2023
+  page-range: 73-93
+  serial-number:
+    doi: 10.1007/978-3-031-43513-3_5
+  parent:
+    type: anthology
+    title: Automated Reasoning with Analytic Tableaux and Related Methods
+    editor:
+      - Ramanayake, Revantha
+      - Urban, Josef
+    publisher:
+      name: Springer Nature Switzerland
+      location: Cham
+
+FvdGvGS24:
+  type: chapter
+  title: Mechanised Uniform Interpolation for Modal Logics K, GL, and iSL
+  author:
+    - Férée, Hugo
+    - name: van der Giessen
+      given-name: Iris
+    - name: van Gool
+      given-name: Sam
+    - Shillito, Ian
+  date: 2024
+  page-range: 43-60
+  serial-number:
+    doi: 10.1007/978-3-031-63501-4_3
+  parent:
+    type: anthology
+    title: Automated Reasoning
+    editor:
+      - Benzmüller, Christoph
+      - Heule, Marijn J. H.
+      - Schmidt, Renate A.
+    publisher:
+      name: Springer Nature Switzerland
+      location: Cham
+
+VL24:
+  type: article
+  title: Lewis and Brouwer Meet Strong Löb
+  author:
+    - Visser, Albert
+    - Litak, Tadeusz
+  date: 2024
+  serial-number:
+    doi: 10.48550/arXiv.2404.11969
+    arxiv: "2404.11969"
+
+HvD20:
+  type: chapter
+  title: A Formal Proof of the Independence of the Continuum Hypothesis
+  author:
+    - Han, Jesse Michael
+    - name: van Doorn
+      given-name: Floris
+  date: 2020
+  page-range: 353-366
+  serial-number:
+    doi: 10.1145/3372885.3373826
+  parent:
+    type: proceedings
+    title: Proceedings of the 9th ACM SIGPLAN International Conference on Certified Programs and Proofs
+    publisher:
+      name: Association for Computing Machinery
+      location: New Orleans, LA, USA
+
+Kun11:
+  type: book
+  title: Set Theory
+  author: Kunen, Kenneth
+  date: 2011
+  publisher:
+    name: College Publications
+    location: London
+
+Fun24:
+  type: misc
+  title: ZF+¬ACの相対的無矛盾性証明のIsabelle/ZFによる形式化
+  author: 舟根, 大喜
+  date: 2024-11-26
+  url: https://www.math.nagoya-u.ac.jp/~garrigue/tpp2024/slides/funane.pdf
+  parent:
+    type: conference
+    title: "TPP 2024: 第20回 Theorem Proving and Provers ミーティング"
+    location: 九州大学
+
+Kun80:
+  type: book
+  title: "Set Theory: An Introduction to Independence Proofs"
+  author: Kunen, Kenneth
+  date: 1980
+  publisher:
+    name: North-Holland
+    location: Amsterdam
+  parent:
+    type: book
+    title: Studies in Logic and the Foundations of Mathematics
+    volume: 102
+
+Kun08:
+  type: book
+  title: "集合論: 独立性証明への案内"
+  author: Kunen, Kenneth
+  translator: 藤田, 博司
+  date: 2008
+  publisher:
+    name: 日本評論社
+
+Jec03:
+  type: book
+  title: "Set Theory: The Third Millennium Edition, Revised and Expanded"
+  author: Jech, Thomas
+  date: 2003
+  serial-number:
+    doi: 10.1007/3-540-44761-X
+  publisher:
+    name: Springer
+    location: Berlin, Heidelberg
+  parent:
+    type: book
+    title: Springer Monographs in Mathematics
+
+Jec08:
+  type: book
+  title: The Axiom of Choice
+  author: Jech, Thomas
+  date: 2008
+  publisher:
+    name: Dover Publications
+    location: Mineola, NY
+
+Kar23:
+  type: report
+  title: "Lecture Notes: Forcing & Symmetric Extensions"
+  author: Karagila, Asaf
+  date: 2023
+
+KEH09:
+  type: chapter
+  title: "seL4: Formal Verification of an OS Kernel"
+  author:
+    - Klein, Gerwin
+    - Elphinstone, Kevin
+    - Heiser, Gernot
+    - Andronick, June
+    - Cock, David
+    - Derrin, Philip
+    - Elkaduwe, Dhammika
+    - Engelhardt, Kai
+    - Kolanski, Rafal
+    - Norrish, Michael
+    - Sewell, Thomas
+    - Tuch, Harvey
+    - Winwood, Simon
+  date: 2009
+  page-range: 207-220
+  serial-number:
+    doi: 10.1145/1629575.1629596
+  parent:
+    type: proceedings
+    title: Proceedings of the ACM SIGOPS 22nd Symposium on Operating Systems Principles
+    publisher:
+      name: Association for Computing Machinery
+      location: New York, NY, USA
+
+Pau03:
+  type: article
+  title: The Relative Consistency of the Axiom of Choice Mechanized Using Isabelle/ZF
+  author: Paulson, Lawrence C.
+  date: 2003
+  page-range: 198-248
+  serial-number:
+    doi: 10.1112/S1461157000000449
+  parent:
+    type: periodical
+    title: LMS Journal of Computation and Mathematics
+    volume: 6
+
+GPST20:
+  type: chapter
+  title: Formalization of Forcing in Isabelle/ZF
+  author:
+    - Gunther, Emmanuel
+    - Pagano, Miguel
+    - Sánchez Terraf, Pedro
+  date: 2020
+  page-range: 221-235
+  serial-number:
+    doi: 10.1007/978-3-030-51054-1_13
+  parent:
+    type: anthology
+    title: Automated Reasoning
+    editor:
+      - Peltier, Nicolas
+      - Sofronie-Stokkermans, Viorica
+    publisher:
+      name: Springer International Publishing
+      location: Cham
+    volume: 12167
+
+GPSTS22:
+  type: misc
+  title: The Independence of the Continuum Hypothesis in Isabelle/ZF
+  author:
+    - Gunther, Emmanuel
+    - Pagano, Miguel
+    - Sánchez Terraf, Pedro
+    - Steinberg, Matías
+  date: 2022-03-06
+  url: https://isa-afp.org/entries/Independence_CH.html
+  parent:
+    type: periodical
+    title: Archive of Formal Proofs
