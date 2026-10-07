@@ -104,7 +104,7 @@
     subtitle: [定理証明支援系 Lean による不完全性定理・証明可能性論理の形式化について],
     author: [野口 真柊],
     date: [2026/10/07 @ SLACS 2026],
-    url: "https://sno2wman.github.io/slides-for-MGITaPL-Lean4/main.pdf",
+    url: "https://sno2wman.github.io/slides-for-MGITaPL/main.pdf",
     institution: [
       神戸大学システム情報学研究科 M2
     ],
@@ -122,12 +122,12 @@
   column-gutter: 12pt,
   inset: (x: 32pt),
   [
-    - 最新版のスライド: #link("https://sno2wman.github.io/slides-for-MGITaPL-Lean4/main.pdf")
+    - 最新版のスライド: #link("https://sno2wman.github.io/slides-for-MGITaPL/main.pdf")
     - プレプリント: #link("https://arxiv.org/abs/2609.13780")
     - 実装: #link("https://github.com/FormalizedFormalLogic/Foundation")
   ],
   [
-    #qr-code("https://sno2wman.github.io/slides-for-MGITaPL-Lean4/main.pdf", width: 180pt)
+    #qr-code("https://sno2wman.github.io/slides-for-MGITaPL/main.pdf", width: 180pt)
   ],
 )
 
