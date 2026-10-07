@@ -1,5 +1,6 @@
 #import "template.typ": *
 #import "zoo.typ": zoo-arithmetic, zoo-provability-logic
+#import "figures.typ": figure-chain-insertion
 
 #let Pred = $serif("Pred")$
 #let Sent = $serif("Sent")$
@@ -139,7 +140,7 @@
 
 *要約*
 
-数学の実践において，人は論理の運行を間違える．例: 仮定の不足，帰納法，etc.
+数学の実践において，人はしばしば論理の運行を間違える．例: 仮定の不足，帰納法，etc.
 
 → #text(size: 1.5em)[*機械に検証させればいいじゃん！*]
 
@@ -160,7 +161,7 @@ Lean 4は型理論としてCalculus of Inductive ($CIC$) を採用しており�
 ]普通に行われている数学が全部展開出来るだろうとされている．
 
 特徴
-- 強力なメタプログラミング能力（マクロや新しいタクティクを作ることが出来る）．
+- 強力なメタプログラミング能力（マクロや新しいタクティクの作成が容易）．
 - 汎用的な数学的ライブラリMathlib（代数，解析学，圏論，etc. #footnote[学部レベルの数学は全部あるらしい．]）．
 - 実用的なプログラミング言語への志向．
 
@@ -172,8 +173,8 @@ Gödelの不完全性定理の形式化の先行研究として例えば以下�
 
 - @Sha86 によるBoyer--Moore定理証明器（Nqthm）
   - G1の最初の形式化．
-- @OCo05 によるRocqでのG1の形式化．
-  - G1は $PA$ ではなくて $Arith("Z2")$ という算術体系上で, G2はいくつかの仮定．
+- @OCo05 によるRocqでのG1, G2の形式化．
+  - G1は $PA$ ではなくて $Arith("Z2")$ という算術体系上で, G2はいくつかの仮定を公理として．
 - @Pau14 によるG2の形式化
   - 唯一のG2の形式化だが，遺伝的有限集合論で議論．
 
@@ -186,7 +187,7 @@ Gödelの不完全性定理の形式化の先行研究として例えば以下�
 
 *２つ目の新規性*：実際に $LogicGL$ の様相を算術に関連付けた形式化は誰もやっていない．
 
-#text(size: 1.5em)[*論理学の形式化は本当に殆どやられていない！*]
+余談: #text(size: 1.5em)[*論理学の形式化はそれほど活発に行われていない！*]#footnote[なぜかはよくわからない．単に数学基礎論がそんなに流行ってないという分野の問題かもしれないし，方向性としてこの分野の研究者が伝統的な記号論理よりも型理論の方に行ってしまうからなのかもしれない．]
 
 == 余談: 定理証明支援系・Leanは信頼できるか？
 
@@ -376,7 +377,9 @@ $ phi, psi ::= top | bot | R(arrow(v)) | not R(arrow(v)) | phi and psi | phi or 
 以降，言語 #LOR (`ℒₒᵣ`) の理論を算術と呼ぶ．
 
 #definition[
-  $R0$ は $LOR$ の等号公理と，次の公理図式からなる理論である（$n, m in NN$）．
+  Cobhamの最弱の算術 $R0$ は $LOR$ の等号公理と，次の公理図式からなる理論である（$n, m in NN$）．
+  $num(n)$ は数項を表す．
+
   $
     num(n) + num(m) = num(n + m), quad
     num(n) dot num(m) = num(n dot m), quad
@@ -721,7 +724,7 @@ $T$ としてPeano算術 $PA$ を取ることが出来る．故に $PA$ は不�
 
 #theorem[Abstract GR][
   $T$ が無矛盾かつ対角化可能で $Bew$ が $bold("Ros")$ を満たすなら，
-  $T nproves upright("G")_Bew$ かつ，何も仮定することなく $T nproves not upright("G")_Bew$．
+  $T nproves upright("G")_Bew$ かつ，*何も仮定することなく* $T nproves not upright("G")_Bew$．
 ]
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/ProvabilityAbstraction/Basic.lean"),))[
@@ -851,6 +854,8 @@ $T$ としてPeano算術 $PA$ を取ることが出来る．故に $PA$ は不�
   abbrev Logic (α : Type*) := Set (Formula α)
   ```
 ]
+
+`α` として `Nat` を取れば可算無限個の命題変数，`Empty` を取れば命題変数がない様相論理式（閉論理式）を表せる．
 
 #pagebreak()
 
@@ -1343,18 +1348,14 @@ $PL(T, U)$ の $T, U$ を動かすとどうなるかは @Bek90 によって完�
 #pagebreak()
 
 #theorem[@Bek90][
-  $L := PL(T, U)$ について．
-  1. $tr(L)$ が補無限なら $L = LogicGLAlpha(tr(L))$．
-  2. $tr(L)$ が補有限かつ $LogicGL subset.eq.not S$ なら $L = LogicGLBeta(tr(L))$．
-  3. $tr(L)$ が補有限かつ $LogicGL subset.eq S$ なら $L$ は $LogicGLAlpha(tr(L)), D union LogicGLBeta(tr(L)), LogicS union LogicGLBeta(tr(L))$ のいずれか．
+  $L := PL(T, U), X := tr(L)$ について．
+  1. $X$ が補無限なら $L = LogicGLAlpha(X)$．
+  2. $X$ が補有限かつ $LogicGL subset.eq.not S$ なら $L = LogicGLBeta(X)$．
+  3. $X$ が補有限かつ $LogicGL subset.eq S$ なら $L$ は $LogicGLAlpha(X), D union LogicGLBeta(X), LogicS union LogicGLBeta(X)$ のいずれか．
 ]
 
 #leancode(links: (("Foundation", "Foundation/ProvabilityLogic/Classification/General.lean"),))[
   ```lean
-  theorem provabilityLogic_eq_A_or_eq_D_or_eq_S :
-      letI L := T.provabilityLogicRelativeTo U (α := α);
-      L.trace = .univ → L ⪯ 𝐒 → L = 𝐀 ∨ L = 𝐃 ∨ L = 𝐒
-
   theorem provabilityLogic_classification :
       letI L := T.provabilityLogicRelativeTo U (α := α);
       L = 𝐆𝐋α L.trace ∨
@@ -1416,7 +1417,7 @@ Heyting算術 $HA$（直観主義論理上の $PA$）の証明可能性論理は
 - $LogiciGL$：直観主義命題論理 $+ AxiomK + upright("(Nec)") + box(box A -> A) -> box A$．$HA$ に対して算術的に健全（@Lit14 @vdGI21）．
 - $LogiciSL$：$LogiciK + (box A -> A) -> A$（@VL24）．
 
-Rocqでの先行研究
+Rocqでの先行研究（様相論理的な興味）
 - $LogiciGL$ のカット除去 @GS22 @Shi22
 - $LogiciSL$ のカット除去 @SvdGGI23，一様補間定理 @FvdGvGS24．
 
@@ -1468,12 +1469,13 @@ Heyting算術をまずどう形式化するか？
 
 現状，Formalized Formal Logicの今回の形式化はMathlibへ移植する気はほとんどない．
 
-理念的な問題
-- Mahtlibのレビューは遅く，また論理学の適切なレビュアーが今いない
+OSS開発としての問題
+- Mahtlibのレビューは遅く，また論理学の適切なレビュアーが今いない．
 - Mathlibの肥大化：ライブラリが8GBもあるのどうなの？
 
-*現実的な問題*
-- 論理学は定義の段階でどのような言語や定式化を選択するかに強く依存する．そのようなものを汎用的なライブラリとして提供する方法がない（あるいは意義が薄い）．
+*論理学特有の問題*
+- 論理学はどのような言語や定式化を選択するかなどの定義に強く依存する．
+  - そのようなものを汎用的なライブラリとして提供する（数学的・技術的）方法がない，あるいは意義が薄い．
 
 今後はあくまでもFFLのフレームワークで論理学をやる方面になるだろう（デファクト・スタンダードになればいいな）
 
@@ -1547,18 +1549,34 @@ Solovayの算術的完全性定理まではLLMは積極的に利用していな�
 
 Kripkeモデルの幾何的な議論（*絵で書いたら自明じゃん*）をどうLeanでコードを書くべきか？が難しく（あるいはただ面倒な議論で）詰まっていた．
 
-例：
+#example[
+  モデル $M$ の適当な点 $a$ の前に $k <= omega$ 個の点を追加する．
+  このとき，新しいモデル $M'$ の高さ $height(M) + k$ は有限個の追加ならせいぜい $height(M) + k$．
 
-モデル $M$ の適当な点 $a$ の前に $n <= omega$ 個の点を追加する．
-このとき，新しいモデルの高さは有限個の追加ならせいぜい $height(M) + n$．
+  #align(center, block(width: 34%, figure-chain-insertion()))
+]
 
-*機械化するとなると結構な議論になる．*
+機械化するとなると結構面倒な議論になる．
 
 #pagebreak()
+
+AI/LLMはMathlibの全てのコードを学習しており(おそらく)，自分が知らなかったようなタクティクや方法の形式証明を書いてくれる．
 
 個人的には，来年(2027年)にはもうそれほど人力で形式証明を書かなくても良い時代が来るのかなとは思う．
 - *便利なキーボードとしてのAI/LLM．*
 - もちろん全体的な議論や実装の筋の良さ，みたいなものは人が評価するべきだとは思う．
+
+#pagebreak()
+
+最近では AlphaCentauri というリポジトリでAI/LLM生成した算術周りの証明を置いています．
+- #link("https://github.com/FormalizedFormalLogic/AlphaCentauri")
+- 人間半分，AI半分で自動証明．
+  - 人間の担当箇所：証明の方針や議論全体の設計や切り分け．PRのレビュー．
+  - AIの担当箇所：人間の方針をもとに実際のコード量の見積もりや形式証明の執筆．
+
+レビュー出来ていないが外部の協力者から $PA$ の独立命題の形式化も送られてきている．
+- #link("https://github.com/FormalizedFormalLogic/goodstein-independence")
+- Goodstein列の停止性，Hydraゲーム，Paris-Harrigntonの定理など．
 
 == まとめ
 
@@ -1566,7 +1584,7 @@ Kripkeモデルの幾何的な議論（*絵で書いたら自明じゃん*）を
 
 *定理証明支援系は楽しいので皆さんも触ってみてください．*
 - 将来は人間のプレプリントを全部形式化して厳密に追試することが出来る，みたいな世界ができたらそれは素晴らしいことだと思います．
-- ロジックの形式化をしている人や資産が*本当に*足りてないので，知的資源およびソフトウェア的な資源があったら本当に助かります．
+- ロジックの形式化をしている人や資産が*本当に*足りてないので，知的資源およびソフトウェア的な資源で協力してくれる人がいたら本当に助かります．
 
 == 参考文献
 
