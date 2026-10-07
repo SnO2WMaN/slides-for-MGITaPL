@@ -46,6 +46,7 @@
 #let AxiomDot3 = $Axiom(".3")$
 
 #let Rule(R) = $upright((#R))$
+#let Nec = $Rule("Nec")$
 #let RuleWL = $Rule("WL")$
 #let RuleWR = $Rule("WL")$
 
@@ -147,7 +148,7 @@
 
 定理証明支援系とは数学をプログラミングコード（形式言語）として記述し，その記述が論理的に破綻してないことを検証するソフトウェアである．
 
-例: Rocq, Isabelle, Agda, HOL/Light, *Lean*
+例: Rocq, Isabelle, Agda, HOL Light, *Lean*
 
 == Leanとは？
 
@@ -183,7 +184,7 @@ Gödelの不完全性定理の形式化の先行研究として例えば以下�
 #pagebreak()
 
 様相論理 $LogicGL$ の形式化として
-- @MPB23 でラベル付きシークエント計算のHOL/Lightでの形式化．
+- @MPB23 でラベル付きシークエント計算のHOL Lightでの形式化．
 
 *２つ目の新規性*：実際に $LogicGL$ の様相を算術に関連付けた形式化は誰もやっていない．
 
@@ -237,11 +238,11 @@ Gödelの不完全性定理の形式化の先行研究として例えば以下�
 次のGödelの不完全性定理の素朴なバージョンを機械化した．
 
 #theorem(numbering: none)[Gödelの第1不完全性定理(G1)][
-  $T$ がCobhamの最弱の算術 $R0$ を含み，$Delta_1$-定義可能 #footnote[$T$の公理を記述する論理式が $Delta_1$-論理式で記述出来る] で，$Sigma_1$-健全なら，$T$ から証明も反証も出来ない論理式が存在する．
+  $T$ がCobhamの最弱の算術 $R0$ を含み，$Delta_1$-定義可能 #footnote[$T$の公理を記述する論理式が $Delta_1$-論理式で記述出来る] で，$Sigma_1$-健全なら，$T$ から証明も反証も出来ない文が存在する．
 ]
 
 #theorem(numbering: none)[Gödelの第2不完全性定理(G2)][
-  $T$ が $ISigma1$ より強く無矛盾なら，$T$ の無矛盾性を表す文は証明できない．
+  $T$ が $ISigma1$ より強く，$Delta_1$-定義可能で，無矛盾なら，$T$ の無矛盾性を表す文は証明できない．
 ]
 
 いくつかの条件は改良できる(後述)．
@@ -260,7 +261,7 @@ Gödelの不完全性定理の形式化の先行研究として例えば以下�
 
 == 論理式
 
-論理式 (疑論理式) は否定標準形で扱う．`L` は言語，型 `ξ` を自由変数，束縛変数はde Bruijnインデックスによって自然数 `ℕ` で扱うこととする．
+論理式 (擬論理式) は否定標準形で扱う．`L` は言語，型 `ξ` を自由変数，束縛変数はde Bruijnインデックスによって自然数 `ℕ` で扱うこととする．
 
 $ phi, psi ::= top | bot | R(arrow(v)) | not R(arrow(v)) | phi and psi | phi or psi | forall phi | exists phi $
 
@@ -279,7 +280,7 @@ $ phi, psi ::= top | bot | R(arrow(v)) | not R(arrow(v)) | phi and psi | phi or 
 ]
 
 - `Formula L ξ` を `Semiformula L ξ 0` の略記（束縛変数無し）
-- `Semisentence L 0` を `Semiformula L Empty n` の略記（自由変数無し）
+- `Semisentence L n` を `Semiformula L Empty n` の略記（自由変数無し）
 - `Sentence L` を `Formula L Empty` の略記（自由・束縛変数無し）
 
 #pagebreak()
@@ -483,7 +484,7 @@ $
   Lean proves \"T proves phi\" <==> Lean proves \"forall V, V models T ==> V models phi\"
 $
 
-意味論的な議論においては，例えば $T$ が十分に豊かな算術であるなら $T models V$ を満たす $V$ が良い代数的な構造になる．
+意味論的な議論においては，例えば $T$ が十分に豊かな算術であるなら $V models T$ を満たす $V$ が良い代数的な構造になる．
 Mathlibなどが提供する代数的な構造に対しての様々な補題やメタプログラミング，自動証明タクティクが利用出来る．
 これを戻して $T proves phi$ を簡単に示せる．
 
@@ -493,29 +494,29 @@ Mathlibなどが提供する代数的な構造に対しての様々な補題や�
 
 #leancode[
   ```lean
-    variable {V : Type*} [ORingStruc V] [V ⊧ₘ* T]
+  variable {V : Type*} [ORingStructure V] [V↓[ℒₒᵣ] ⊧* T]
   ```
 ]
 
-- `ORingStruc V`: $V$ が言語 $cal(L)_"OR"$ の構造であることを主張するtypeclass.
-- `V ⊧ₘ* T`: $V$ が理論 $T$ を満たすことを主張するtypeclass.
+- `ORingStructure V`: $V$ が言語 $cal(L)_"OR"$ の構造であることを主張するtypeclass.
+- `V↓[ℒₒᵣ] ⊧* T`: $V$ が理論 $T$ を満たすことを主張するtypeclass.
 
 $V$ 上で機械化を行う．関数は選択関数を用いて定義出来る．
 
 #leancode[
   ```lean
-    lemma sqrt_exists_unique (a : V) : ∃! x, x * x ≤ a ∧ a < (x + 1) * (x + 1)
+  lemma sqrt_exists_unique (a : V) : ∃! x, x * x ≤ a ∧ a < (x + 1) * (x + 1)
 
-    def sqrt (a : V) : V := Classical.choose! (sqrt_exists_unique a)
-    prefix:75 "√" => sqrt
+  noncomputable def sqrt (a : V) : V := Classical.choose! (sqrt_exists_unique a)
+  prefix:75 "√" => sqrt
 
-    lemma sqrt_mul_self (a : V) : √(a * a) = a
+  lemma sqrt_mul_self (a : V) : √(a * a) = a
   ```
 ]
 
 == メタ数学の算術化
 
-形式体系を算術の中でさらに形式化する#footnote[Formalizing \[Formalizing \[Formalizing mathematics in formal system\] in Arithmetic\] in Lean]：*算術化・Bootstraping*．
+形式体系を算術の中でさらに形式化する#footnote[Formalizing \[Formalizing \[Formalizing mathematics in formal system\] in Arithmetic\] in Lean]：*算術化・Bootstrapping*．
 
 - 論理式 $phi$ や導出木 $D$ に対して $V$ への割り当て $godelize(dot)$ を割り当てる（*Gödel数*）．
 - 逆に $V$ の要素 $x$ が項，論理式，導出木のGödel数であるというメタの（Lean上の）述語 $upright("IsFormula")(x) : V mapsto 2$ などを考える．
@@ -550,7 +551,7 @@ $R0$ では表現定理が成り立つ #footnote[もちろんRobinson算術 や 
 
 == 第1不完全性定理
 
-表現定理および算術化を用いて，Gödelの第1不完全性定理(G1)をまず形式化出来る．
+表現定理および算術化を用いて，Gödelの第1不完全性定理(G1)をまず機械化出来る．
 
 #theorem[G1][
   $T$ がCobhamの最弱の算術 $R0$ を含み，$Delta_1$-定義可能で，$Sigma_1$-健全なら，$T$ から証明も反証も出来ない文が存在する．
@@ -662,14 +663,14 @@ $R0$ では表現定理が成り立つ #footnote[もちろんRobinson算術 や 
 
 == 第2不完全性定理
 
-算術化を頑張るとHBLを満たす証明可能性を実際に構成に構成することができる．
+算術化を頑張るとHBLを満たす証明可能性を実際に構成することができる．
 - 今後この標準的な証明可能性は $box_T$ と書く．
-また，対角可能性も実際満たす．
+また，対角化可能性も実際満たす．
 故に系として，第2不完全性定理やLöbの定理を機械化出来る．
 
 
 #theorem[Gödelの第2不完全性定理][
-  $T$ が $ISigma1$ より強く無矛盾なら，$T$ の無矛盾性を表す文 $not box_T bot$ は証明できない．
+  $T$ が $ISigma1$ より強く，$Delta_1$-定義可能で，無矛盾なら，$T$ の無矛盾性を表す文 $not box_T bot$ は証明できない．
 ]
 
 #leancode(links: (("Foundation", "Foundation/FirstOrder/Incompleteness/Second.lean"),))[
@@ -692,13 +693,7 @@ $R0$ では表現定理が成り立つ #footnote[もちろんRobinson算術 や 
 
 $T$ としてPeano算術 $PA$ を取ることが出来る．故に $PA$ は不完全だし，その無矛盾性は $PA$ 自身で証明できない．
 
-#leancode(
-  links: (
-    ("Foundation", "Foundation/FirstOrder/Arithmetic/Schemata.lean"),
-    ("Foundation", "Foundation/FirstOrder/Incompleteness/Definability.lean"),
-    ("Foundation", "Foundation/FirstOrder/Incompleteness/Examples.lean"),
-  ),
-)[
+#leancode[
   ```lean
   instance : 𝗣𝗔 ⪱ 𝗣𝗔 ∪ 𝗣𝗔.Con
   instance : 𝗣𝗔 ⪱ 𝗣𝗔 ∪ 𝗣𝗔.Incon
@@ -744,7 +739,7 @@ $T$ としてPeano算術 $PA$ を取ることが出来る．故に $PA$ は不�
 
 実際witness comparisonなどの道具を使って $bold("Ros")$ を満たす証明可能性述語を具体的に構成することが出来る．ゆえに
 
-#theorem[Gödel-Rosserの第一不完全性定理][
+#theorem[Gödel-Rosserの第1不完全性定理][
   $T$ が $ISigma1$ を含み，$Delta_1$-定義可能で，*無矛盾なら，*$T$ から証明も反証も出来ない文が存在する．
 ]
 
@@ -790,8 +785,8 @@ $T$ としてPeano算術 $PA$ を取ることが出来る．故に $PA$ は不�
 - 「Gödel数が $n$ 以下の証明で証明できる」証明可能性述語について #footnote[この否定の不動点「Gödel数が $n$ 未満の証明では証明できない」は $NN$ 上で正しいし，実際に $n$ 未満の証明で証明できない．故に $n$ を途方もなく大きく取ればそれは正しいが現実的な証明を持たない命題とも言える．]．
 - Ehrenfeucht-Mycielskiの加速定理．
 - Craigのトリック．
-- Friedman-–Goldfarb–-Harrington定理（FGH定理） #footnote[$ISigma1 + Con(T)$ 上では任意の $Sigma_1$-文は何らかの $sigma$ に対し $box_T sigma$ と同値．]．
-- 第一不完全性定理が成立する理論のLindenbaum代数は全て同型．
+- Friedman--Goldfarb--Harrington定理（FGH定理） #footnote[$ISigma1 + Con(T)$ 上では任意の $Sigma_1$-文は何らかの $sigma$ に対し $box_T sigma$ と同値．]．
+- 第1不完全性定理が成立する理論のLindenbaum代数は全て同型．
 - $upright("I")Sigma_n$: $n >= 1$ は有限公理化可能．
 - $PA$ は有限公理化不能（Ryll-Nardzewskiの定理）．
 
@@ -859,8 +854,6 @@ $T$ としてPeano算術 $PA$ を取ることが出来る．故に $PA$ は不�
 
 #pagebreak()
 
-#let Nec = $Rule("Nec")$
-
 #definition[
   論理 $LogicGL$ は古典命題論理に以下の公理と規則を足したもの．
   - 規則 $Nec : proves A ==> proves box A$
@@ -869,11 +862,11 @@ $T$ としてPeano算術 $PA$ を取ることが出来る．故に $PA$ は不�
   - 公理 $AxiomL : box (box A -> A) -> box A$
 ]
 
-証明可能性 $Bew$ のHBLおよびF-Loebと以下で対応する．
+証明可能性 $Bew$ のHBLおよびF-Löbと以下で対応する．
 - 規則 $Nec$ が #D1
 - 公理 $AxiomK$ が #D2
 - 公理 $Axiom4$ が #D3
-- 公理 $AxiomL$ が F-Loeb
+- 公理 $AxiomL$ が F-Löb
 
 #leancode(
   links: (
@@ -989,7 +982,7 @@ Leanでは次のように定義する．
 == 様相論理 $LogicGL$ のシークエント計算
 
 @SV82 の $LogicGL$ のシークエント計算を機械化する．
-Kripke意味論の完全性はこちらのほうがはるかに簡単に証明がスッキリする #footnote[$LogicGL$ は標準的な様相論理のカノニカルモデルの構成による証明は不可能．有限判例モデルを直接作るか，適当にモデルを同値で割って証明する．Hilbert流だと細かい部分の計算が煩雑になる．]．
+Kripke意味論に対する完全性の証明はこちらのほうがはるかにスッキリする #footnote[$LogicGL$ は標準的な様相論理のカノニカルモデルの構成による証明は不可能．有限反例モデルを直接作るか，適当にモデルを同値で割って証明する．Hilbert流だと細かい部分の計算が煩雑になる．]．
 
 #definition[
   *シークエント* $Gamma => Delta$ とは論理式の有限集合の組である．
@@ -1078,7 +1071,7 @@ Kripke意味論の完全性はこちらのほうがはるかに簡単に証明�
 
 #pagebreak()
 
-完全性定理から意味論的カット除去定理（カット許容）であることがすぐに従う．
+完全性定理から，カット規則の許容性（意味論的カット除去）がすぐに従う．
 
 #theorem[#GentzenGL のカット除去定理][
   カット規則は #GentzenGL で許容される．
@@ -1136,9 +1129,9 @@ Kripke意味論の完全性はこちらのほうがはるかに簡単に証明�
 
 シークエントを集合で定義しているため，例えばweakeningやcontractionをどのタイミングで行うかは決定的ではなく，*（Leanにおいて）現実的に*証明探索は出来ない #footnote[多分多重集合であったとしてもLeanでは決定的に証明できないと思う．リストなら出来る気もするが，あまりにも面倒な実装になると思う．]．
 
-例えば，@MPB23 はラベル付きシークエント計算体系をHOL/Lightで実装し， `GL_provable` のような論理式が $LogicGL$ で証明できるか判定するタクティクを定義している．
+例えば，@MPB23 はラベル付きシークエント計算体系をHOL Lightで実装し， `GL_provable` のような論理式が $LogicGL$ で証明できるか判定するタクティクを定義している．
 
-- ただし，このタクティクが必ず停止することはHOL/Lightの中では証明されていない．数学的に停止するというメタの保証 @Neg05 に依存して実装されている．（つまり実装が間違っていたら永遠に止まらないという可能性はある．）
+- ただし，このタクティクが必ず停止することはHOL Lightの中では証明されていない．数学的に停止するというメタの保証 @Neg05 に依存して実装されている．（つまり実装が間違っていたら永遠に止まらないという可能性はある．）
 - 一応我々はラベル付きシークエント計算も実装して停止性も機械化したが．．．
 
 #pagebreak()
@@ -1149,7 +1142,7 @@ Kripke意味論の完全性はこちらのほうがはるかに簡単に証明�
 
 == 様相論理 $LogicGL$ のシークエント計算の余談: 補間定理と不動点定理
 
-@SV82 ではさらにシークエント計算を使った応用として， $LogicGL$ のCraig補間定理と不動点補題を示している．
+@SV82 ではさらにシークエント計算を使った応用として， $LogicGL$ のCraig補間定理と不動点定理を示している．
 $LogicGL$ の導出木を手作りすれば補間と不動点は構成的に計算できる(Maeharaの方法) #footnote[ただし殆どの場合そんなことはしなくて完全性から作るので意義はない．] #footnote[@Gig26 もLeanで補間性定理などを示しているが，意味論的な制約により特殊なケースのみになっている．シークエント計算から一般に構成出来るというのはそれなりに利点に思える．]．
 
 #theorem[$LogicGL$ のCraig補間性][
@@ -1207,7 +1200,7 @@ $LogicGL$ の $box$ と証明可能性 $Bew$ を結びつけよう．
 
 #definition[
   $f$ を様相論理の命題変数から算術の文への写像とし*実現(realization)*と呼ぶ．
-  $f$ による様相論理 $A$ の *$Bew$-解釈 $f_Bew (A)$* を以下で定める．
+  $f$ による様相論理式 $A$ の *$Bew$-解釈 $f_Bew (A)$* を以下で定める．
   - $f_Bew (p) = f(p)$
   - $f_Bew (bot) = bot$
   - $f_Bew (A -> B) = f_Bew (A) -> f_Bew (B)$
@@ -1285,9 +1278,9 @@ $PL(T, U)$ の $T, U$ を動かすとどうなるかは @Bek90 によって完�
 #definition[
   以下の論理を定める．$LogicGL + X$ は $X$ とのunionのMP/substの閉包（非正規拡大）．
   - $LogicGLAlpha(X) := LogicGL + { box^(n + 1) bot -> box^n bot : n in X}$．
-  - $LogicGLBeta(X) := LogicGL + not and.big_(n in.not X) box^(n + 1) bot -> box^n bot$：ただし $X$ は補有限．
+  - $LogicGLBeta(X) := LogicGL + not and.big_(n in.not X) (box^(n + 1) bot -> box^n bot)$：ただし $X$ は補有限．
   - $LogicA := LogicGL + {not box^n bot : n in NN }$．
-  - $LogicD := LogicGL + not box bot + box (A or B) -> box A or box B$．
+  - $LogicD := LogicGL + not box bot + box (box A or box B) -> box A or box B$．
   - $LogicS := LogicGL + box A -> A$．
 ]
 
@@ -1348,10 +1341,10 @@ $PL(T, U)$ の $T, U$ を動かすとどうなるかは @Bek90 によって完�
 #pagebreak()
 
 #theorem[@Bek90][
-  $L := PL(T, U), X := tr(L)$ について．
+  $T$ を $ISigma1$ を含む $Delta_1$-定義可能な算術，$U$ を任意の算術とし，$L := PL(T, U), X := tr(L)$ とする．
   1. $X$ が補無限なら $L = LogicGLAlpha(X)$．
-  2. $X$ が補有限かつ $LogicGL subset.eq.not S$ なら $L = LogicGLBeta(X)$．
-  3. $X$ が補有限かつ $LogicGL subset.eq S$ なら $L$ は $LogicGLAlpha(X), D union LogicGLBeta(X), LogicS union LogicGLBeta(X)$ のいずれか．
+  2. $X$ が補有限かつ $L subset.eq.not LogicS$ なら $L = LogicGLBeta(X)$．
+  3. $X$ が補有限かつ $L subset.eq LogicS$ なら $L$ は $LogicGLAlpha(X), LogicD inter LogicGLBeta(X), LogicS inter LogicGLBeta(X)$ のいずれか．
 ]
 
 #leancode(links: (("Foundation", "Foundation/ProvabilityLogic/Classification/General.lean"),))[
@@ -1366,11 +1359,11 @@ $PL(T, U)$ の $T, U$ を動かすとどうなるかは @Bek90 によって完�
 #pagebreak()
 
 #theorem[@Bek90][
-  真の算術の証明可能性論理 $L := PL(T, TA)$ について．
+  $T$ を $ISigma1$ を含む $Delta_1$-定義可能な算術とし，真の算術の証明可能性論理 $L := PL(T, TA)$ について．
   1. $T$ が健全なら $L = LogicS$．
-  2. $Sigma_1$-健全ではあるなら $L = LogicD$．
-  3. $height(T) = omega$ なら $L = LogicA$．
-  4. さもなくば，$L = LogicGLBeta(NN setminus \{height(T)\})$．
+  2. 健全ではないが $Sigma_1$-健全なら $L = LogicD$．
+  3. $Sigma_1$-健全でなく $height(T) = omega$ なら $L = LogicA$．
+  4. $height(T) = n < omega$ なら $L = LogicGLBeta(NN setminus \{n\})$．
   のいずれか一つのみが成立する．
 ]
 
@@ -1389,7 +1382,7 @@ $PL(T, U)$ の $T, U$ を動かすとどうなるかは @Bek90 によって完�
 
 #align(center, zoo-provability-logic())
 
-原理的には，それぞれの中間には $2^omega$ 個の相異な証明可能性述語がある（はず）．
+原理的には，それぞれの中間には $2^omega$ 個の相異な証明可能性論理がある（はず）．
 
 = まとめと今後の展望と余談
 
