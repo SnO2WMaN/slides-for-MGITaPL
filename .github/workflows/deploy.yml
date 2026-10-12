@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      # main.typ / template.typ が使うフォント（"New Computer Modern Math" は Typst 同梱）．
+      # main.typ / nightcore.typ / template.typ が使うフォント（"New Computer Modern Math" は Typst 同梱）．
       # fontsource の配布物は Unicode 範囲ごとのサブセットに分かれており，Typst は同一ファミリ・
       # 同一ウェイトのうち 1 ファイルしか選ばないため英字などが Libertinus Serif に落ちる．
       # そのため google/fonts の完全版 TTF を，再現性のためコミットを固定して取得する．
@@ -53,10 +53,12 @@ jobs:
             echo "$fonts" | grep -Fxq "$family" || { echo "::error::font not found: $family"; exit 1; }
           done
       - run: typst compile main.typ main.pdf
+      - run: typst compile nightcore.typ nightcore.pdf
       - name: Create page directory
         run: |
           mkdir _pages
           mv ./main.pdf ./_pages/main.pdf
+          mv ./nightcore.pdf ./_pages/nightcore.pdf
           echo "<meta http-equiv=\"refresh\" content=\"0;URL='$(gh api "repos/$GITHUB_REPOSITORY" --jq '.html_url')'\">" > ./_pages/index.html
         env:
           GH_TOKEN: ${{ github.token }}
