@@ -281,6 +281,13 @@ Alwe260929:
   url: https://x.com/Alwe_Logic/status/2099488711427973188
   date: 2026-09-14
 
+iehality261011:
+  type: Misc
+  author: "@_ni_nn_i_"
+  title: https://x.com/_ni_nn_i_/status/2109217944291176598
+  url: https://x.com/_ni_nn_i_/status/2109217944291176598
+  date: 2026-10-11
+
 dM260801:
   type: Misc
   author: "de Moura, Leonardo"
@@ -1236,3 +1243,20 @@ GPSTS22:
   parent:
     type: periodical
     title: Archive of Formal Proofs
+
+Kik16:
+  type: book
+  title: "数学における証明と真理: 様相論理と数学基礎論"
+  author:
+    - 菊池, 誠
+    - 佐野, 勝彦
+    - 倉橋, 太志
+    - 薄葉, 季路
+    - 黒川, 英徳
+  editor: 菊池, 誠
+  date: 2016-03-28
+  serial-number:
+    isbn: 978-4-320-11148-6
+  url: https://www.kyoritsu-pub.co.jp/book/b10003727.html
+  publisher:
+    name: 共立出版

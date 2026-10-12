@@ -19,6 +19,10 @@
   accent: color.hsl(331.96deg, 80.7%, 55.29%),
 )
 
+// 現在のアクセントカラー．`config-info(accent: ..)` で上書きできる．
+#let accent-state = state("accent", theme-colors.accent)
+#let accent-of(self) = self.info.at("accent", default: theme-colors.accent)
+
 // QR コードは背景を透明にし，文字色で描く．
 #let qr-code = qr-code.with(
   color: theme-colors.foreground,
@@ -30,12 +34,13 @@
   supplement: supplement,
   counter: counter,
   base: none,
-  fmt: thm-fmt-block.with(
+  fmt: (..args) => context thm-fmt-block(
+    ..args,
     block-args: (
       breakable: false,
       radius: 0pt,
       inset: (left: 1em, top: 0.75em, bottom: 0.75em),
-      stroke: (left: 0.25em + theme-colors.accent),
+      stroke: (left: 0.25em + accent-state.get().darken(20%).desaturate(60%)),
     ),
     name-fmt: x => [(#x)],
     title-fmt: strong,
@@ -154,8 +159,8 @@
       fill: gradient
         .linear(
           angle: 20deg,
-          (color.hsl(250.24deg, 67.21%, 11.96%), 0%),
-          (self.colors.accent, 100%),
+          (accent-of(self).darken(80%).desaturate(30%), 0%),
+          (accent-of(self), 100%),
         )
         .sharp(8),
       // ヘッダーはページ幅いっぱいに置かれるので，左右の inset で本文の左端に揃える．
@@ -227,9 +232,9 @@
         fill: gradient
           .linear(
             angle: 20deg,
-            (color.hsl(250.24deg, 67.21%, 11.96%), 0%),
-            (self.colors.accent, 75%),
-            (color.hsl(250.24deg, 67.21%, 11.96%), 100%),
+            (accent-of(self).darken(90%).desaturate(70%), 0%),
+            (accent-of(self), 75%),
+            (accent-of(self).darken(90%).desaturate(70%), 100%),
           )
           .sharp(15),
         {
@@ -333,8 +338,8 @@
         spacing: 0pt,
         components.progress-bar(
           height: 2pt,
-          self.colors.primary,
-          self.colors.primary-light,
+          accent-of(self),
+          accent-of(self).darken(70%).desaturate(30%),
         ),
       ),
     )
@@ -434,13 +439,16 @@
     ),
     config-methods(
       init: (self: none, body) => {
+        accent-state.update(accent-of(self))
+        show strong: set text(fill: accent-of(self))
+        show link: set text(font: "Juisee", fill: accent-of(self))
         set text(size: 25pt)
         show heading.where(level: 3): set text(fill: self.colors.primary)
         show heading.where(level: 4): set text(fill: self.colors.primary)
 
         body
       },
-      alert: (self: none, it) => text(fill: self.colors.accent, it),
+      alert: (self: none, it) => text(fill: accent-of(self), it),
     ),
     config-colors(
       primary: theme-colors.foreground,
@@ -460,12 +468,9 @@
   )
 
   set text(font: "Shippori Antique", size: 18pt, fill: theme-colors.foreground)
-  show strong: set text(fill: theme-colors.accent)
-  // 数式内の日本語が OS 既定のフォントにならないよう，数式フォントの後ろに本文フォントを足す．
   show math.equation: set text(font: ("New Computer Modern Math", "Shippori Antique"))
   show raw: set text(font: "Juisee", size: 1em)
   show raw.where(block: true): set text(size: 0.9em)
-  show link: set text(font: "Juisee", fill: theme-colors.accent)
   show footnote.entry: set text(size: .75em, fill: theme-colors.secondary)
   set footnote.entry(separator: line(length: 30%, stroke: .5pt + theme-colors.secondary))
 
